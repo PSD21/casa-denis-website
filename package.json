@@ -4,7 +4,10 @@
     "description": "Casa Denis After School Website",
     "main": "server.js",
     "scripts": {
-        "start": "node server.js"
+        "start": "node server.js",
+        "setup-db": "node setup-db.js",
+        "migrate": "node migrate-data.js",
+        "build": "node setup-db.js"
     },
     "dependencies": {
         "bcrypt": "^6.0.0",
