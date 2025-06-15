@@ -4,7 +4,25 @@ const fs = require('fs').promises;
 
 // Railway provides these environment variables automatically
 const dbConfig = (() => {
-    // First try DATABASE_URL format (Railway's preferred method)
+    // First try Railway's MySQL environment variables (MYSQL prefix) - HIGHEST PRIORITY
+    if (process.env.MYSQLHOST && process.env.MYSQLUSER && process.env.MYSQLPASSWORD && process.env.MYSQLDATABASE) {
+        console.log('🔧 Using Railway MySQL environment variables');
+        console.log('🔍 Raw MySQL values - Host:', process.env.MYSQLHOST, 'User:', process.env.MYSQLUSER, 'DB:', process.env.MYSQLDATABASE);
+        return {
+            host: process.env.MYSQLHOST,
+            user: process.env.MYSQLUSER,
+            password: process.env.MYSQLPASSWORD,
+            database: process.env.MYSQLDATABASE,
+            port: parseInt(process.env.MYSQLPORT) || 3306,
+            charset: 'utf8mb4',
+            waitForConnections: true,
+            connectionLimit: 10,
+            queueLimit: 0,
+            ssl: { rejectUnauthorized: false }
+        };
+    }
+    
+    // Then try DATABASE_URL format (Railway's preferred method)
     if (process.env.DATABASE_URL && process.env.DATABASE_URL.startsWith('mysql://')) {
         console.log('🔧 Using DATABASE_URL');
         try {
@@ -26,27 +44,10 @@ const dbConfig = (() => {
         }
     }
     
-    // Try Railway's MySQL environment variables (MYSQL prefix)
-    if (process.env.MYSQLHOST && process.env.MYSQLUSER && process.env.MYSQLPASSWORD && process.env.MYSQLDATABASE) {
-        console.log('🔧 Using Railway MySQL environment variables');
-        return {
-            host: process.env.MYSQLHOST,
-            user: process.env.MYSQLUSER,
-            password: process.env.MYSQLPASSWORD,
-            database: process.env.MYSQLDATABASE,
-            port: parseInt(process.env.MYSQLPORT) || 3306,
-            charset: 'utf8mb4',
-            waitForConnections: true,
-            connectionLimit: 10,
-            queueLimit: 0,
-            ssl: { rejectUnauthorized: false }
-        };
-    }
-    
-    // Try Railway's DB environment variables (DB_ prefix)
+    // Try Railway's DB environment variables (DB_ prefix) - FALLBACK
     if (process.env.DB_HOST && process.env.DB_USER && process.env.DB_PASSWORD && process.env.DB_NAME) {
         console.log('🔧 Using Railway DB environment variables');
-        console.log('🔍 Raw values - Host:', process.env.DB_HOST, 'User:', process.env.DB_USER, 'DB:', process.env.DB_NAME);
+        console.log('🔍 Raw DB values - Host:', process.env.DB_HOST, 'User:', process.env.DB_USER, 'DB:', process.env.DB_NAME);
         return {
             host: process.env.DB_HOST,
             user: process.env.DB_USER,
