@@ -1,0 +1,178 @@
+{
+    "title": "Povestea Casa Denis",
+    "subtitle": "Un centru after-school creat cu dragoste pentru a oferi copiilor un spațiu sigur de învățare, dezvoltare și descoperire în fiecare zi după școală.",
+    "mission": "La Casa Denis, credem că fiecare copil merită un mediu în care să se simtă în siguranță, să fie ascultat și să își dezvolte potențialul unic. Misiunea noastră este să oferim un program after-school de calitate care să completeze educația formală cu experiențe practice, creative și sociale care formează caractere puternice și minti curioase.",
+    "team_intro": "Echipa noastră este formată din profesioniști dedicați, cu experiență în educație și îngrijirea copiilor. Fiecare membru al echipei aduce pasiune și expertise pentru a crea un mediu optim de dezvoltare pentru copii.",
+    "stats": { 
+        "children": "50+",
+        "years": "3+",
+        "satisfaction": "100%",
+        "hours": "11h"
+    },
+    "values": [
+        {
+            "id": "value-1",
+            "icon": "fas fa-shield-alt",
+            "title": "Siguranță",
+            "description": "Mediul nostru este proiectat pentru siguranța fizică și emotională a fiecărui copil, cu personal instruit și protocoale clare."
+        },
+        {
+            "id": "value-2",
+            "icon": "fas fa-users-cog",
+            "title": "Respect",
+            "description": "Respectăm individualitatea fiecărui copil și îi încurajăm să își exprime personalitatea în mod autentic."
+        },
+        {
+            "id": "value-3",
+            "icon": "fas fa-lightbulb",
+            "title": "Creativitate",
+            "description": "Stimulăm gândirea creativă prin activități variate care dezvoltă imaginația și inovația."
+        },
+        {
+            "id": "value-4",
+            "icon": "fas fa-hands-helping",
+            "title": "Colaborare",
+            "description": "Învățăm copiii să lucreze în echipă și să dezvolte abilități sociale puternice pentru viitor."
+        },
+        {
+            "id": "value-5",
+            "icon": "fas fa-graduation-cap",
+            "title": "Excelență",
+            "description": "Căutăm întotdeauna să îmbunătățim serviciile noastre și să oferim experiențe de înaltă calitate."
+        },
+        {
+            "id": "value-6",
+            "icon": "fas fa-heart",
+            "title": "Empatie",
+            "description": "Dezvoltăm inteligența emoțională și capacitatea de a înțelege și sprijini pe alții."
+        }
+    ],
+    "facilities": [
+        {
+            "id": "facility-1",
+            "icon": "fas fa-book-reader",
+            "title": "Sală de studiu",
+            "description": "Spațiu liniștit și bine organizat pentru realizarea temelor și activități educaționale, cu resurse didactice moderne."
+        },
+        {
+            "id": "facility-2",
+            "icon": "fas fa-palette",
+            "title": "Atelier de artă",
+            "description": "Spațiu creativ echipat cu materiale de artă diverse pentru pictură, desen, sculptură și alte activități artistice."
+        },
+        {
+            "id": "facility-3",
+            "icon": "fas fa-utensils",
+            "title": "Bucătărie modernă",
+            "description": "Bucătărie complet echipată pentru prepararea meselor sănătoase și atelierelor culinare pentru copii."
+        },
+        {
+            "id": "facility-4",
+            "icon": "fas fa-gamepad",
+            "title": "Zona de joacă interioară",
+            "description": "Spațiu sigur pentru activități recreative, jocuri de societate și socializare între copii."
+        },
+        {
+            "id": "facility-5",
+            "icon": "fas fa-tree",
+            "title": "Grădină exterioară",
+            "description": "Spațiu verde amenajat pentru activități în aer liber, jocuri și explorarea naturii."
+        },
+        {
+            "id": "facility-6",
+            "icon": "fas fa-laptop",
+            "title": "Zonă digitală",
+            "description": "Acces controlat la tehnologie educațională pentru dezvoltarea competențelor digitale."
+        }
+    ],
+    "team": [
+        {
+            "id": "team-1",
+            "name": "Ana-Maria Popescu",
+            "role": "Director",
+            "description": "Cu o experiență de peste 10 ani în educația timpurie, Ana-Maria coordonează toate activitățile și asigură standardele înalte de calitate.",
+            "image": "images/team-placeholder.jpg"
+        },
+        {
+            "id": "team-2",
+            "name": "Maria Ionescu",
+            "role": "Educator Principal",
+            "description": "Specializată în psihologia copilului, Maria dezvoltă programe educaționale personalizate pentru nevoile fiecărui copil.",
+            "image": "images/team-placeholder.jpg"
+        },
+        {
+            "id": "team-3",
+            "name": "Elena Dumitrescu",
+            "role": "Instructor Arte Creative",
+            "description": "Artist profesionist și educator, Elena conduce atelierele de artă și meșteșuguri, stimulând creativitatea copiilor.",
+            "image": "images/team-placeholder.jpg"
+        }
+    ],
+    "services": {
+        "title": "Serviciile Noastre",
+        "data": [
+            {
+                "title": "Spații de joacă interior",
+                "description": "Zone sigure și moderne pentru activități recreative în interior",
+                "icon": "fas fa-gamepad",
+                "color": "#667eea"
+            },
+            {
+                "title": "Spații de joacă exterior",
+                "description": "Grădină amenajată cu echipamente de joacă în aer liber",
+                "icon": "fas fa-tree",
+                "color": "#48bb78"
+            },
+            {
+                "title": "Mini grădină zoologică",
+                "description": "Interacțiune cu animale prietenoase pentru dezvoltarea empatiei",
+                "icon": "fas fa-paw",
+                "color": "#ed8936"
+            },
+            {
+                "title": "Activități educative",
+                "description": "Programe structurate pentru dezvoltarea abilităților cognitive",
+                "icon": "fas fa-book-open",
+                "color": "#8b5cf6"
+            },
+            {
+                "title": "Test Service Nou",
+                "description": "Acesta este un serviciu nou adăugat pentru test",
+                "icon": "fas fa-star",
+                "color": "#ff6b6b"
+            }
+        ]
+    },
+    "history": [
+        {
+            "id": "history-1",
+            "year": "2021",
+            "title": "Începutul unei vise",
+            "description": "Casa Denis a luat naștere din dorința de a crea un spațiu special pentru copii, unde să se simtă acasă după orele de școală."
+        },
+        {
+            "id": "history-2",
+            "year": "2022",
+            "title": "Deschiderea oficială",
+            "description": "După luni de pregătiri și amenajări, am deschis porțile pentru primii 20 de copii și familiile lor."
+        },
+        {
+            "id": "history-3",
+            "year": "2023",
+            "title": "Expansiunea serviciilor",
+            "description": "Am adăugat noi programe: ateliere de gătit, sesiuni de meditație pentru copii și clubul de lectură."
+        },
+        {
+            "id": "history-4",
+            "year": "2024",
+            "title": "Recunoaștere și creștere",
+            "description": "Am ajuns să îngrijim peste 50 de copii și am primit premiul pentru \"Cel mai bun centru after-school\" local."
+        },
+        {
+            "id": "history-5",
+            "year": "2025",
+            "title": "Viitorul nostru",
+            "description": "Continuăm să inovăm și să creștem, cu planuri pentru noi programe și servicii pentru comunitatea noastră."
+        }
+    ]
+}

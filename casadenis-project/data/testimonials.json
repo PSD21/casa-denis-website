@@ -1,0 +1,42 @@
+[
+    {
+        "id": "test-1",
+        "name": "Ana Maria Popescu",
+        "role": "Mamă a doi copii",
+        "text": "Casa Denis a fost o binecuvântare pentru familia noastră. Copiii mei adoră activitățile și personalul, iar eu sunt liniștită știind că sunt în mâini bune.",
+        "initials": "AMP",
+        "color": "bg-pink-100"
+    },
+    {  
+        "id": "test-2",
+        "name": "Mihai Ionescu",
+        "role": "Tată",
+        "text": "De când fiica mea frecventează Casa Denis, am observat o îmbunătățire semnificativă a rezultatelor școlare și a abilităților sociale.",
+        "initials": "MI",
+        "color": "bg-purple-100"
+    },
+    {
+        "id": "test-3",
+        "name": "Cristina Dumitru",
+        "role": "Mamă",
+        "text": "Programul flexibil și diversitatea activităților oferite de Casa Denis sunt exact ceea ce căutam pentru copilul meu. Recomand cu încredere!",
+        "initials": "CD",
+        "color": "bg-yellow-100"
+    },
+    {
+        "id": "test-4",
+        "name": "Gabriel Marinescu",
+        "role": "Părinte",
+        "text": "Personalul este foarte profesionist și dedicat. Copilul meu se întoarce acasă fericit și plin de energie pozitivă în fiecare zi.",
+        "initials": "GM",
+        "color": "bg-green-100"
+    },
+    {
+        "id": "test-5",
+        "name": "Elena Georgescu",
+        "role": "Mamă a trei copii",
+        "text": "Casa Denis este ca o a doua familie pentru copiii mei. Activitățile sunt variate și educative, iar copiii învață în timp ce se distrează.",
+        "initials": "EG",
+        "color": "bg-blue-100"
+    }
+]

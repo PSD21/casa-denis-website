@@ -1,0 +1,44 @@
+[
+    {
+        "id": "1",
+        "title": "Asistență teme",
+        "description": "Oferim sprijin pentru teme și proiecte școlare, asigurându-ne că fiecare copil înțelege și își completează sarcinile.",
+        "icon": "fas fa-book-open",
+        "color": "bg-pink-100"
+    }, 
+    {
+        "id": "2",
+        "title": "Arte și meșteșuguri",
+        "description": "Activități creative care stimulează imaginația și dezvoltă abilitățile motorii fine ale copiilor.",
+        "icon": "fas fa-palette",
+        "color": "bg-purple-100"
+    },
+    {
+        "id": "3",
+        "title": "Muzică și dans",
+        "description": "Lecții de muzică și dans care încurajează exprimarea de sine și dezvoltarea talentelor artistice.",
+        "icon": "fas fa-music",
+        "color": "bg-yellow-100"
+    },
+    {
+        "id": "4",
+        "title": "Jocuri educative",
+        "description": "Jocuri interactive care dezvoltă gândirea logică, memoria și abilitățile de rezolvare a problemelor.",
+        "icon": "fas fa-puzzle-piece",
+        "color": "bg-green-100"
+    },
+    {
+        "id": "5",
+        "title": "Activități sociale",
+        "description": "Activități de grup care dezvoltă abilitățile sociale și emoționale ale copiilor.",
+        "icon": "fas fa-users",
+        "color": "bg-blue-100"
+    },
+    {
+        "id": "6",
+        "title": "Excursii și evenimente",
+        "description": "Excursii educative și evenimente speciale organizate periodic pentru a îmbogăți experiența copiilor.",
+        "icon": "far fa-calendar-alt",
+        "color": "bg-orange-100"
+    }
+]

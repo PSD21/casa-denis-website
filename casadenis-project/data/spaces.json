@@ -1,0 +1,26 @@
+[
+    {
+        "id": "1",
+        "name": "Sala de activități",
+        "role": "Spațiu multifuncțional",
+        "description": "Ideală pentru ateliere creative, cursuri sau petreceri pentru copii, cu echipamente moderne.",
+        "image": "/images/prima-camera.jpeg",
+        "color": "pink"
+    },
+    { 
+        "id": "2",
+        "name": "Zona de joacă",
+        "role": "Spațiu de recreere",
+        "description": "Un spațiu dedicat jocurilor și activităților interactive, perfect pentru grupuri de copii.",
+        "image": "/images/a-doua-camera.jpeg",
+        "color": "purple"
+    },
+    {
+        "id": "3",
+        "name": "Sala de evenimente",
+        "role": "Spațiu pentru ocazii speciale",
+        "description": "Potrivită pentru aniversări, evenimente tematice sau întâlniri, cu decor personalizabil.",
+        "image": "/images/hol.jpeg",
+        "color": "yellow"
+    }
+]

@@ -1,0 +1,37 @@
+{
+    "name": "casa-denis",
+    "version": "1.0.0",
+    "description": "Casa Denis After School Website with MySQL and Email Integration",
+    "main": "server.js",
+    "scripts": { 
+        "start": "node server.js",
+        "dev": "nodemon server.js",
+        "setup-db": "node setup-database.js"
+    },
+    "dependencies": {
+        "cors": "^2.8.5",
+        "express": "^4.17.1",
+        "multer": "^2.0.0",
+        "uuid": "^8.3.2",
+        "mysql2": "^3.6.5",
+        "nodemailer": "^6.9.7",
+        "bcrypt": "^5.1.1",
+        "dotenv": "^16.3.1"
+    },
+    "devDependencies": {
+        "nodemon": "^3.0.2"
+    },
+    "engines": {
+        "node": ">=14.0.0"
+    },
+    "keywords": [
+        "after-school",
+        "children",
+        "education",
+        "childcare",
+        "satu-mare",
+        "romania"
+    ],
+    "author": "Casa Denis Team",
+    "license": "MIT"
+}

@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casa Denis - Galerie Foto</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>   
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* Header Section */
+        .gallery-header {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.95), rgba(118, 75, 162, 0.95));
+            backdrop-filter: blur(20px);
+            padding: 2rem 0;
+            text-align: center;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .gallery-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            background: linear-gradient(45deg, #fff, #f0f0f0);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gallery-subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        /* Navigation & Controls */
+        .gallery-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        .search-box {
+            position: relative;
+            margin-right: 1rem;
+        }
+
+        .search-input {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50px;
+            padding: 12px 45px 12px 20px;
+            color: white;
+            font-size: 1rem;
+            width: 300px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .search-input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: rgba(255,255,255,0.8);
+            background: rgba(255,255,255,0.3);
+            width: 350px;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,0.8);
+        }
+
+        .close-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(15px);
+            z-index: 1000;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .close-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.1) rotate(90deg);
+        }
+
+        /* Main Gallery Container */
+        .gallery-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        /* Gallery Grid Layout - Masonry Only */
+        .gallery-grid {
+            display: block;
+            position: relative;
+            margin-bottom: 3rem;
+            transition: all 0.5s ease;
+        }
+
+        /* Gallery Items */
+        .gallery-item {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.6s ease forwards;
+            break-inside: avoid;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: all 0.5s ease;
+            object-fit: cover;
+        }
+
+        /* Specific styling for tall/portrait images to show complete image */
+        .gallery-item.portrait img {
+            object-fit: cover;
+            min-height: 300px;
+            max-height: 450px;
+        }
+
+        /* Add special hover effect for portrait images */
+        .gallery-item.portrait:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Specific styling for square images */
+        .gallery-item.square img {
+            object-fit: cover;
+            aspect-ratio: 1;
+        }
+
+        /* Specific styling for landscape images */
+        .gallery-item.landscape img {
+            object-fit: cover;
+            max-height: 250px;
+        }
+
+        /* Specific styling for panoramic images */
+        .gallery-item.panoramic img {
+            object-fit: cover;
+            max-height: 180px;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+            filter: brightness(1.1);
+        }
+
+        /* Image dimension indicator */
+        .image-info {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .gallery-item:hover .image-info {
+            opacity: 1;
+        }
+
+        /* Image Overlay */
+        .gallery-item-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.9));
+            color: white;
+            padding: 2rem;
+            transform: translateY(100%);
+            transition: all 0.4s ease;
+        }
+
+        .gallery-item:hover .gallery-item-overlay {
+            transform: translateY(0);
+        }
+
+        .overlay-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .overlay-description {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+
+        /* Floating Action Button */
+        .floating-actions {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            z-index: 1000;
+        }
+
+        .fab {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            backdrop-filter: blur(10px);
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.6);
+        }
+
+        /* Enhanced Lightbox */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(20px);
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox-content {
+            max-width: 80%;
+            max-height: 80%;
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        .lightbox img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+            display: block;
+            /* Ensure images start at a reasonable scale */
+            width: auto;
+            height: auto;
+        }
+
+        /* Add specific scaling for different image types in lightbox */
+        .lightbox img.portrait-img {
+            max-height: 70vh;
+            max-width: 50vw;
+            object-fit: cover;
+        }
+
+        .lightbox img.landscape-img {
+            max-width: 80vw;
+            max-height: 60vh;
+            object-fit: cover;
+        }
+
+        .lightbox img.square-img {
+            max-width: 60vw;
+            max-height: 60vh;
+            object-fit: cover;
+        }
+
+        .lightbox img.panoramic-img {
+            max-width: 90vw;
+            max-height: 40vh;
+            object-fit: cover;
+        }
+
+        .lightbox-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(rgba(0,0,0,0.8), transparent);
+            color: white;
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .lightbox-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .lightbox-counter {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        .lightbox-close {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .lightbox-close:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.1) rotate(90deg);
+        }
+
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+
+        .lightbox-nav:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .lightbox-prev {
+            left: 30px;
+        }
+
+        .lightbox-next {
+            right: 30px;
+        }
+
+        /* Gallery Stats */
+        .gallery-stats {
+            text-align: center;
+            color: white;
+            background: rgba(255,255,255,0.1);
+            padding: 2rem;
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.2);
+            margin-top: 3rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #fff;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-top: 0.5rem;
+        }
+
+        /* Loading & Empty States */
+        .loading, .empty-state {
+            text-align: center;
+            color: white;
+            padding: 4rem 2rem;
+        }
+
+        .loading i, .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.7;
+        }
+
+        .loading i {
+            animation: pulse 2s infinite;
+        }
+
+        .loading-text, .empty-text {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .gallery-title {
+                font-size: 2.5rem;
+            }
+            
+            .search-input {
+                width: 250px;
+            }
+            
+            .search-input:focus {
+                width: 280px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                padding: 0 1rem;
+            }
+            
+            .gallery-title {
+                font-size: 2rem;
+            }
+            
+            .gallery-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .gallery-container {
+                padding: 2rem 1rem;
+            }
+            
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 1rem;
+            }
+            
+            .search-input {
+                width: 200px;
+            }
+            
+            .search-input:focus {
+                width: 220px;
+            }
+            
+            .lightbox-nav {
+                display: none;
+            }
+            
+            .floating-actions {
+                bottom: 20px;
+                right: 20px;
+            }
+            
+            .fab {
+                width: 50px;
+                height: 50px;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .gallery-item.list-view {
+                flex-direction: column;
+                max-height: none;
+            }
+            
+            .gallery-item.list-view img {
+                width: 100%;
+                height: 200px;
+                margin-right: 0;
+                margin-bottom: 1rem;
+            }
+            
+            .gallery-controls {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .search-input {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .search-input:focus {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="close-btn" onclick="window.close()" title="Închide galeria">
+        <i class="fas fa-times"></i>
+    </button>
+
+    <!-- Enhanced Header -->
+    <div class="gallery-header">
+        <div class="header-content">
+            <h1 class="gallery-title">
+                <i class="fas fa-camera-retro"></i> Galeria Casa Denis
+            </h1>
+            <p class="gallery-subtitle">Capturăm momentele speciale din fiecare zi</p>
+            
+            <div class="gallery-controls">
+                <div class="search-box">
+                    <input type="text" class="search-input" id="searchInput" placeholder="Caută în galerie...">
+                    <i class="fas fa-search search-icon"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="gallery-container">
+        <div class="loading" id="loading">
+            <i class="fas fa-images"></i>
+            <div class="loading-text">Se încarcă galeria...</div>
+            <div style="font-size: 1rem; opacity: 0.7;">Pregătim cele mai frumoase momente</div>
+        </div>
+
+        <div class="gallery-grid" id="gallery-grid" style="display: none;">
+            <!-- Gallery items will be loaded here -->
+        </div>
+
+        <div class="gallery-stats" id="gallery-stats" style="display: none;">
+            <h3><i class="fas fa-chart-pie"></i> Statistici Galerie</h3>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number" id="photo-count">0</span>
+                    <div class="stat-label">Fotografii</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="activity-count">0</span>
+                    <div class="stat-label">Activități</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="memory-count">0</span>
+                    <div class="stat-label">Amintiri</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Actions -->
+    <div class="floating-actions">
+        <button class="fab" onclick="scrollToTop()" title="Sus">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        <button class="fab" onclick="toggleFullscreen()" title="Ecran complet">
+            <i class="fas fa-expand"></i>
+        </button>
+    </div>
+
+    <!-- Enhanced Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <div class="lightbox-content">
+            <div class="lightbox-header">
+                <div class="lightbox-title" id="lightbox-title">Titlu imagine</div>
+                <div class="lightbox-counter" id="lightbox-counter">1 / 1</div>
+                <button class="lightbox-close" onclick="closeLightbox()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <button class="lightbox-nav lightbox-prev" onclick="prevImage()">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="lightbox-nav lightbox-next" onclick="nextImage()">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            <img id="lightbox-img" src="" alt="">
+        </div>
+    </div>
+
+    <script>
+        let galleryImages = [];
+        let filteredImages = [];
+        let currentImageIndex = 0;
+
+        // Load gallery data
+        async function loadGallery() {
+            try {
+                const response = await fetch('/api/gallery');
+                if (response.ok) {
+                    galleryImages = await response.json();
+                    filteredImages = [...galleryImages];
+                    renderGallery();
+                    updateStats();
+                } else {
+                    // For demo purposes, create sample images
+                    createSampleGallery();
+                }
+            } catch (error) {
+                console.error('Error loading gallery:', error);
+                createSampleGallery();
+            }
+        }
+
+        // Create sample gallery for demonstration
+        function createSampleGallery() {
+            galleryImages = [
+                { src: 'https://picsum.photos/400/600', alt: 'Activități zilnice - Portrait' },
+                { src: 'https://picsum.photos/800/500', alt: 'Joacă în curte - Landscape' },
+                { src: 'https://picsum.photos/500/500', alt: 'Masa împreună - Square' },
+                { src: 'https://picsum.photos/900/400', alt: 'Panoramă grădină - Panoramic' },
+                { src: 'https://picsum.photos/600/800', alt: 'Lectură - Portrait' },
+                { src: 'https://picsum.photos/700/450', alt: 'Sport - Landscape' },
+                { src: 'https://picsum.photos/450/450', alt: 'Arte și meserii - Square' },
+                { src: 'https://picsum.photos/1000/350', alt: 'Activitate de grup - Panoramic' },
+                { src: 'https://picsum.photos/350/600', alt: 'Învățăm împreună - Portrait' },
+                { src: 'https://picsum.photos/750/400', alt: 'Timp liber - Landscape' }
+            ];
+            filteredImages = [...galleryImages];
+            renderGallery();
+            updateStats();
+        }
+
+        // Render gallery with masonry layout
+        function renderGallery() {
+            const grid = document.getElementById('gallery-grid');
+            const loading = document.getElementById('loading');
+            const stats = document.getElementById('gallery-stats');
+            
+            if (filteredImages.length === 0) {
+                showEmptyState('Nu există imagini în galerie încă', 'fas fa-images');
+                return;
+            }
+
+            loading.style.display = 'none';
+            grid.style.display = 'block';
+            stats.style.display = 'block';
+
+            // Create all items
+            const items = [];
+            filteredImages.forEach((image, index) => {
+                const item = document.createElement('div');
+                item.className = 'gallery-item';
+                
+                item.innerHTML = `
+                    <img src="${image.src}" alt="${image.alt}" onerror="this.style.display='none'" loading="lazy">
+                    <div class="image-info">Încărcare...</div>
+                    <div class="gallery-item-overlay">
+                        <div class="overlay-title">${image.alt || 'Activitate Casa Denis'}</div>
+                    </div>
+                `;
+                
+                item.addEventListener('click', () => openLightbox(index));
+                items.push({ element: item, image: image, index: index });
+                
+                // Stagger animation
+                setTimeout(() => {
+                    item.style.animationDelay = `${index * 0.1}s`;
+                }, 50);
+            });
+
+            // Apply masonry layout
+            applyMasonryLayout(grid, items);
+        }
+
+        // Intelligent JavaScript Masonry Layout
+        function applyMasonryLayout(container, items) {
+            // Reset container for masonry
+            container.innerHTML = '';
+            container.style.position = 'relative';
+            container.style.height = 'auto';
+            
+            const columnWidth = 320;
+            const gap = 24; // 1.5rem
+            const containerWidth = container.offsetWidth;
+            const columnsCount = Math.max(1, Math.floor((containerWidth + gap) / (columnWidth + gap)));
+            
+            // Initialize column heights
+            const columnHeights = new Array(columnsCount).fill(0);
+            const columnPositions = [];
+            
+            // Calculate column positions
+            for (let i = 0; i < columnsCount; i++) {
+                columnPositions.push(i * (columnWidth + gap));
+            }
+
+            let loadedCount = 0;
+            
+            items.forEach((item, index) => {
+                const img = new Image();
+                
+                // Pre-append item to container (hidden initially)
+                item.element.style.opacity = '0';
+                container.appendChild(item.element);
+                
+                img.onload = function() {
+                    const aspectRatio = this.naturalHeight / this.naturalWidth;
+                    const { cardType } = categorizeImage(this.naturalWidth, this.naturalHeight);
+                    
+                    // Add dimension-based class
+                    item.element.classList.add(cardType);
+                    
+                    // Calculate item height based on actual image dimensions
+                    const itemHeight = Math.ceil(columnWidth * aspectRatio) + 80; // Extra padding for overlay
+                    
+                    // Find shortest column
+                    const shortestColumnIndex = columnHeights.indexOf(Math.min(...columnHeights));
+                    
+                    // Position the item
+                    item.element.style.position = 'absolute';
+                    item.element.style.left = `${columnPositions[shortestColumnIndex]}px`;
+                    item.element.style.top = `${columnHeights[shortestColumnIndex]}px`;
+                    item.element.style.width = `${columnWidth}px`;
+                    item.element.style.opacity = '1';
+                    
+                    // Update column height
+                    columnHeights[shortestColumnIndex] += itemHeight + gap;
+                    
+                    // Update dimension info
+                    item.element.querySelector('.image-info').textContent = `${this.naturalWidth}×${this.naturalHeight}`;
+                    
+                    loadedCount++;
+                    if (loadedCount === items.length) {
+                        // Set container height to tallest column
+                        const maxHeight = Math.max(...columnHeights);
+                        container.style.height = `${maxHeight}px`;
+                    }
+                };
+                
+                img.onerror = function() {
+                    // Handle error case
+                    const defaultHeight = 250;
+                    const shortestColumnIndex = columnHeights.indexOf(Math.min(...columnHeights));
+                    
+                    item.element.style.position = 'absolute';
+                    item.element.style.left = `${columnPositions[shortestColumnIndex]}px`;
+                    item.element.style.top = `${columnHeights[shortestColumnIndex]}px`;
+                    item.element.style.width = `${columnWidth}px`;
+                    item.element.style.opacity = '1';
+                    
+                    columnHeights[shortestColumnIndex] += defaultHeight + gap;
+                    item.element.querySelector('.image-info').textContent = 'Error';
+                    
+                    loadedCount++;
+                    if (loadedCount === items.length) {
+                        const maxHeight = Math.max(...columnHeights);
+                        container.style.height = `${maxHeight}px`;
+                    }
+                };
+                
+                img.src = item.image.src;
+            });
+        }
+
+        // Categorize images based on dimensions and aspect ratio
+        function categorizeImage(width, height) {
+            const aspectRatio = height / width;
+            let cardType, dimensions;
+            
+            if (aspectRatio > 1.3) {
+                cardType = 'portrait';
+                dimensions = 'Portrait';
+            } else if (aspectRatio < 0.6) {
+                cardType = 'panoramic';
+                dimensions = 'Panoramic';
+            } else if (aspectRatio >= 0.8 && aspectRatio <= 1.2) {
+                cardType = 'square';
+                dimensions = 'Square';
+            } else {
+                cardType = 'landscape';
+                dimensions = 'Landscape';
+            }
+            
+            return { cardType, dimensions };
+        }
+
+        function showEmptyState(message, icon) {
+            const loading = document.getElementById('loading');
+            loading.innerHTML = `
+                <i class="${icon}"></i>
+                <div class="loading-text">${message}</div>
+                <div style="font-size: 1rem; opacity: 0.7;">Imaginile vor apărea aici când vor fi adăugate</div>
+            `;
+            loading.className = 'empty-state';
+        }
+
+        function updateStats() {
+            document.getElementById('photo-count').textContent = galleryImages.length;
+            document.getElementById('activity-count').textContent = Math.ceil(galleryImages.length / 3);
+            document.getElementById('memory-count').textContent = galleryImages.length * 2;
+        }
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            filteredImages = galleryImages.filter(image => 
+                (image.alt || '').toLowerCase().includes(searchTerm)
+            );
+            renderGallery();
+        });
+
+        // Enhanced lightbox functionality
+        function openLightbox(index) {
+            currentImageIndex = index;
+            const lightbox = document.getElementById('lightbox');
+            const img = document.getElementById('lightbox-img');
+            const title = document.getElementById('lightbox-title');
+            const counter = document.getElementById('lightbox-counter');
+            
+            // Create temporary image to get dimensions
+            const tempImg = new Image();
+            tempImg.onload = function() {
+                const { cardType } = categorizeImage(this.naturalWidth, this.naturalHeight);
+                
+                // Remove any existing image type classes
+                img.classList.remove('portrait-img', 'landscape-img', 'square-img', 'panoramic-img');
+                
+                // Add appropriate class based on image type
+                switch(cardType) {
+                    case 'portrait':
+                        img.classList.add('portrait-img');
+                        break;
+                    case 'landscape':
+                        img.classList.add('landscape-img');
+                        break;
+                    case 'square':
+                        img.classList.add('square-img');
+                        break;
+                    case 'panoramic':
+                        img.classList.add('panoramic-img');
+                        break;
+                }
+            };
+            
+            tempImg.src = filteredImages[index].src;
+            img.src = filteredImages[index].src;
+            img.alt = filteredImages[index].alt;
+            title.textContent = filteredImages[index].alt || 'Activitate Casa Denis';
+            counter.textContent = `${index + 1} / ${filteredImages.length}`;
+            
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function nextImage() {
+            currentImageIndex = (currentImageIndex + 1) % filteredImages.length;
+            updateLightboxImage();
+        }
+
+        function prevImage() {
+            currentImageIndex = (currentImageIndex - 1 + filteredImages.length) % filteredImages.length;
+            updateLightboxImage();
+        }
+
+        function updateLightboxImage() {
+            const img = document.getElementById('lightbox-img');
+            const title = document.getElementById('lightbox-title');
+            const counter = document.getElementById('lightbox-counter');
+            
+            // Create temporary image to get dimensions for proper scaling
+            const tempImg = new Image();
+            tempImg.onload = function() {
+                const { cardType } = categorizeImage(this.naturalWidth, this.naturalHeight);
+                
+                // Remove any existing image type classes
+                img.classList.remove('portrait-img', 'landscape-img', 'square-img', 'panoramic-img');
+                
+                // Add appropriate class based on image type
+                switch(cardType) {
+                    case 'portrait':
+                        img.classList.add('portrait-img');
+                        break;
+                    case 'landscape':
+                        img.classList.add('landscape-img');
+                        break;
+                    case 'square':
+                        img.classList.add('square-img');
+                        break;
+                    case 'panoramic':
+                        img.classList.add('panoramic-img');
+                        break;
+                }
+            };
+            
+            tempImg.src = filteredImages[currentImageIndex].src;
+            img.src = filteredImages[currentImageIndex].src;
+            img.alt = filteredImages[currentImageIndex].alt;
+            title.textContent = filteredImages[currentImageIndex].alt || 'Activitate Casa Denis';
+            counter.textContent = `${currentImageIndex + 1} / ${filteredImages.length}`;
+        }
+
+        // Utility functions
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            const lightbox = document.getElementById('lightbox');
+            if (!lightbox.classList.contains('active')) return;
+            
+            switch(e.key) {
+                case 'Escape':
+                    closeLightbox();
+                    break;
+                case 'ArrowLeft':
+                    prevImage();
+                    break;
+                case 'ArrowRight':
+                    nextImage();
+                    break;
+            }
+        });
+
+        // Touch gestures for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.getElementById('lightbox').addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.getElementById('lightbox').addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+            
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    nextImage(); // Swipe left
+                } else {
+                    prevImage(); // Swipe right
+                }
+            }
+        }
+
+        // Close lightbox when clicking outside image
+        document.getElementById('lightbox').addEventListener('click', (e) => {
+            if (e.target.id === 'lightbox') {
+                closeLightbox();
+            }
+        });
+
+        // Load gallery on page load
+        document.addEventListener('DOMContentLoaded', loadGallery);
+
+        // Re-render on window resize
+        window.addEventListener('resize', () => {
+            clearTimeout(window.resizeTimeout);
+            window.resizeTimeout = setTimeout(() => {
+                renderGallery();
+            }, 250);
+        });
+
+        // Initial render when images finish loading
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                renderGallery();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

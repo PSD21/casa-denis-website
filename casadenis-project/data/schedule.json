@@ -1,0 +1,8 @@
+[
+    { "time": "07:00 - 08:00", "activity": "Sosire și acomodare" },
+    { "time": "08:00 - 10:00", "activity": "Mic dejun și jocuri de societate" },
+    { "time": "10:00-14:00", "activity": "Teme și activități educaționale" },
+    { "time": "15:00-15:30", "activity": "Gustare și pauză" },
+    { "time": "15:30-17:00", "activity": "Activități recreative și creative" },
+    { "time": "17:00-18:00", "activity": "Joc liber și preluare de către părinți" }
+] 

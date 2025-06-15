@@ -1,0 +1,340 @@
+netstat -ano | findstr :3001
+TCP    [::]:3001             [::]:0                 LISTENING       12345
+taskkill /PID 12345 /F
+http://localhost:3002/admin.html
+# Casa Denis After School Website
+
+Un sistem complet de management pentru Casa Denis After School, cu funcționalități avansate de administrare, mesagerie și galerie foto.
+
+## 🌟 Funcționalități
+
+### ✅ **Implementat Complet**
+- **📧 Sistema de Email Automată**
+  - Notificări automate la mesaje noi
+  - Confirmări pentru vizitatori
+  - Configurare flexibilă SMTP
+  - Logging complet al email-urilor
+ 
+- **🗄️ Baza de Date MySQL**
+  - Stocare sigură a mesajelor
+  - Statistici avansate
+  - Backup automat
+  - Audit trail
+
+- **🖼️ Management Galerie**
+  - Upload multiple imagini
+  - Redimensionare automată
+  - Validare tipuri fișiere
+  - Ștergere în masă
+
+- **📊 Dashboard Admin**
+  - Statistici în timp real
+  - Filtrare și căutare avansată
+  - Management utilizatori
+  - Monitorizare sistem
+
+- **🔧 Funcții Avansate**
+  - Health check sistem
+  - Backup automat
+  - Rate limiting
+  - Securitate enhanced
+
+## 🚀 Instalare Rapidă
+
+### Pasul 1: Pregătire Sistem
+```bash
+# Clonează repository-ul
+git clone https://github.com/your-username/casa-denis.git
+cd casa-denis
+
+# Rulează scriptul de setup
+chmod +x setup.sh
+./setup.sh
+```
+
+### Pasul 2: Configurare Manuală
+
+1. **Editează `.env`**:
+```bash
+# Database
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=your_mysql_password
+DB_NAME=casa_denis_db
+
+# Email (Gmail App Password)
+SMTP_USER=casa.denis2025@gmail.com
+SMTP_PASS=your_16_char_app_password
+ADMIN_EMAIL=admin@casadenis.ro
+```
+
+2. **Setup MySQL Database**:
+```bash
+mysql -u root -p < database_setup.sql
+```
+
+3. **Start Application**:
+```bash
+npm start
+```
+
+## 📧 Configurare Email Gmail
+
+### Pas cu Pas:
+
+1. **Activează 2FA pe Gmail**
+   - Mergi la [Google Account Security](https://myaccount.google.com/security)
+   - Activează "2-Step Verification"
+
+2. **Generează App Password**
+   - În secțiunea Security → App passwords
+   - Selectează "Mail" și "Other"
+   - Nume: "Casa Denis Website"
+   - Copiază parola de 16 caractere
+
+3. **Actualizează .env**
+   ```bash
+   SMTP_PASS=your_16_char_app_password_here
+   ```
+
+4. **Testează în Admin Panel**
+   - Mergi la Settings → Email Settings
+   - Click "Test Email Configuration"
+
+## 🗄️ Schema Bazei de Date
+
+### Tabele Principale:
+
+```sql
+-- Mesaje de la vizitatori
+messages (id, name, email, phone, message, type, status, created_at)
+
+-- Configurări email
+email_settings (smtp_host, smtp_port, credentials, is_active)
+
+-- Loguri email
+email_logs (message_id, recipient, subject, status, sent_at)
+
+-- Utilizatori admin
+admin_users (username, email, password_hash, permissions)
+
+-- Galerie imagini
+gallery_items (filename, alt_text, file_size, upload_date)
+```
+
+## 🔧 API Endpoints
+
+### Mesaje
+```bash
+GET    /api/messages          # Lista mesaje cu paginare
+POST   /api/messages          # Mesaj nou (din formular)
+PATCH  /api/messages/:id      # Actualizează status
+DELETE /api/messages/:id      # Șterge mesaj
+GET    /api/messages/stats    # Statistici mesaje
+```
+
+### Email
+```bash
+GET    /api/email-settings    # Configurări email
+PUT    /api/email-settings    # Actualizează configurări
+POST   /api/email-settings/test  # Test configurație
+```
+
+### Galerie
+```bash
+GET    /api/gallery           # Lista imagini
+POST   /api/gallery/upload    # Upload imagine nouă
+PUT    /api/gallery/:id       # Editează descriere
+DELETE /api/gallery/:id       # Șterge imagine
+POST   /api/gallery/bulk      # Operații în masă
+```
+
+### Admin
+```bash
+POST   /api/login             # Autentificare
+GET    /api/health            # Status sistem
+POST   /api/backup            # Creează backup
+```
+
+## 📁 Structura Proiect
+
+```
+casa-denis/
+├── server.js                 # Server principal
+├── .env                      # Configurări (nu în git)
+├── package.json              # Dependencies
+├── database_setup.sql        # Schema MySQL
+├── setup.sh                  # Script setup automat
+├── casadenis-project/
+│   └── public/
+│       ├── admin.html         # Dashboard admin
+│       ├── index.html         # Site principal
+│       ├── gallery.html       # Galerie foto
+│       ├── nfc.html          # Link NFC
+│       ├── styles.css        # Stiluri
+│       └── images/           # Upload imagini
+├── data/                     # JSON files (backup)
+│   ├── hero.json
+│   ├── about.json
+│   ├── programs.json
+│   ├── schedule.json
+│   ├── spaces.json
+│   ├── gallery.json
+│   ├── testimonials.json
+│   ├── contact.json
+│   └── messages.json
+├── backups/                  # Backup-uri automate
+└── logs/                     # Log files
+```
+
+## 👨‍💼 Utilizare Admin Panel
+
+### Acces: `http://localhost:3001/admin.html`
+**Login**: `admin` / `parola123`
+
+### Funcționalități:
+
+1. **📊 Dashboard**
+   - Statistici mesaje noi
+   - Activitate recentă
+   - Status sistem
+
+2. **📧 Mesaje**
+   - Filtrare după tip/status
+   - Căutare în conținut
+   - Răspuns direct la email
+   - Export în Excel
+
+3. **🖼️ Galerie**
+   - Upload drag & drop
+   - Editare descrieri
+   - Ștergere multiplă
+   - Preview imagini
+
+4. **⚙️ Configurări**
+   - Email SMTP settings
+   - Backup manual
+   - User management
+   - System health
+
+## 🔒 Securitate
+
+### Măsuri Implementate:
+- **Rate Limiting**: 100 requests/15min per IP
+- **Input Validation**: Sanitizare toate input-urile
+- **SQL Injection Protection**: Prepared statements
+- **File Upload Security**: Validare tipuri și mărime
+- **Password Hashing**: bcrypt cu 10 rounds
+- **CORS Protection**: Configurare specifică
+- **Error Handling**: Nu expune informații sensibile
+
+### Recomandări Producție:
+```bash
+# 1. Schimbă parolele default
+# 2. Configurează firewall
+# 3. SSL certificate
+# 4. Backup regulat
+# 5. Monitoring logs
+# 6. Update dependencies
+```
+
+## 📈 Monitorizare & Backup
+
+### Health Check:
+```bash
+curl http://localhost:3001/api/health
+```
+
+### Backup Manual:
+```bash
+curl -X POST http://localhost:3001/api/backup
+```
+
+### Logs Location:
+```bash
+# Application logs
+tail -f logs/application.log
+
+# Email logs (in database)
+SELECT * FROM email_logs ORDER BY sent_at DESC LIMIT 100;
+
+# Error logs
+tail -f logs/error.log
+```
+
+## 🛠️ Dezvoltare
+
+### Development Mode:
+```bash
+npm run dev  # cu nodemon
+```
+
+### Database Migrations:
+```bash
+# Run new migration
+mysql -u root -p casa_denis_db < migrations/001_add_new_feature.sql
+```
+
+### Testing Email:
+```bash
+# Test cu curl
+curl -X POST http://localhost:3001/api/email-settings/test \
+  -H "Content-Type: application/json" \
+  -d '{"test_email": "your-email@example.com"}'
+```
+
+## 🚨 Troubleshooting
+
+### Probleme Comune:
+
+1. **Email nu se trimite**
+   ```bash
+   # Verifică logs
+   SELECT * FROM email_logs WHERE status = 'failed' ORDER BY sent_at DESC;
+   
+   # Verifică configurație
+   curl http://localhost:3001/api/email-settings
+   ```
+
+2. **Eroare MySQL**
+   ```bash
+   # Verifică conexiune
+   mysql -u root -p -e "SELECT 1"
+   
+   # Verifică baza de date
+   mysql -u root -p -e "USE casa_denis_db; SHOW TABLES;"
+   ```
+
+3. **Upload imagini eșuează**
+   ```bash
+   # Verifică permissions
+   chmod 755 casadenis-project/public/images
+   
+   # Verifică spațiu disk
+   df -h
+   ```
+
+4. **Port ocupat**
+   ```bash
+   # Găsește procesul care folosește portul
+   lsof -i :3001
+   
+   # Sau schimbă portul în .env
+   PORT=3002
+   ```
+
+## 📞 Support
+
+Pentru probleme sau întrebări:
+- **Email**: casa.denis2025@gmail.com
+- **Telefon**: +40 740 490 171
+- **GitHub Issues**: [Create Issue](https://github.com/your-username/casa-denis/issues)
+
+## 📄 Licență
+
+Acest proiect este proprietatea Casa Denis After School.
+Toate drepturile rezervate © 2024.
+
+---
+
+**🏠 Casa Denis - Un loc unde copiii înfloresc! 🌟**

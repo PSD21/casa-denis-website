@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>   
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Despre Casa Denis - Detalii Complete</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Enhanced styles for about detailed page */
+        .about-hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8rem 0 4rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('images/copii la after school.jpg') center/cover;
+            opacity: 0.2;
+            z-index: 1;
+        }
+
+        .about-hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .about-hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .about-hero p {
+            font-size: 1.3rem;
+            max-width: 800px;
+            margin: 0 auto;
+            opacity: 0.95;
+            line-height: 1.6;
+        }
+
+        .breadcrumb {
+            background: white;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .breadcrumb nav {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .breadcrumb a {
+            color: #7c3aed;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .breadcrumb a:hover {
+            color: #db2777;
+        }
+
+        .breadcrumb span {
+            color: #6b7280;
+        }
+
+        .detail-section {
+            padding: 4rem 0;
+        }
+
+        .detail-section:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .detail-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+
+        .detail-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+        }
+
+        .detail-card h3 {
+            color: #7c3aed;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .detail-card h3 i {
+            color: #ec4899;
+            font-size: 1.5rem;
+        }
+
+        .detail-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .detail-list-item {
+            background: #f0f9ff;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid #0ea5e9;
+            transition: all 0.3s ease;
+        }
+
+        .detail-list-item:hover {
+            background: #e0f2fe;
+            transform: translateX(5px);
+        }
+
+        .detail-list-item h4 {
+            color: #0369a1;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .detail-list-item h4 i {
+            color: #0ea5e9;
+        }
+
+        .detail-list-item p {
+            color: #075985;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            color: white;
+            padding: 2rem;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .stat-card i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .stat-card h4 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+
+        .team-intro {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 3rem auto;
+        }
+
+        .team-member {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+
+        .team-member:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+        }
+
+        .team-member img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1.5rem;
+            border: 4px solid #f3e8ff;
+        }
+
+        .team-member h4 {
+            color: #7c3aed;
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .team-member .role {
+            color: #ec4899;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, #ec4899, #8b5cf6);
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 3rem;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content {
+            margin-right: 60%;
+            text-align: right;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content {
+            margin-left: 60%;
+            text-align: left;
+        }
+
+        .timeline-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            position: relative;
+        }
+
+        .timeline-content::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 0;
+            height: 0;
+            border: 15px solid transparent;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content::before {
+            right: -30px;
+            border-left-color: white;
+            transform: translateY(-50%);
+        }
+
+        .timeline-item:nth-child(even) .timeline-content::before {
+            left: -30px;
+            border-right-color: white;
+            transform: translateY(-50%);
+        }
+
+        .timeline-year {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #ec4899, #8b5cf6);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.1rem;
+            z-index: 2;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('images/background.jpeg') center/cover;
+            opacity: 0.1;
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .about-hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .about-hero p {
+                font-size: 1.1rem;
+            }
+
+            .timeline::before {
+                left: 20px;
+            }
+
+            .timeline-item:nth-child(odd) .timeline-content,
+            .timeline-item:nth-child(even) .timeline-content {
+                margin-left: 60px;
+                margin-right: 0;
+                text-align: left;
+            }
+
+            .timeline-year {
+                left: 20px;
+            }
+
+            .timeline-content::before {
+                left: -30px !important;
+                right: auto !important;
+                border-right-color: white !important;
+                border-left-color: transparent !important;
+            }
+
+            .detail-list {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .cta-buttons .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="sticky top-0 z-40">
+        <div class="container">
+            <div class="logo">
+                <img src="images/logo.png" alt="Casa Denis Logo" width="60" height="60">
+                <span class="logo-text">Casa Denis</span>
+            </div>
+            <nav>
+                <a href="index.html">Acasă</a>
+                <a href="index.html#about">Despre noi</a>
+                <a href="index.html#programs">Programe</a>
+                <a href="index.html#schedule">Program</a>
+                <a href="index.html#team">Închiriere spațiu</a>
+                <a href="index.html#gallery">Galerie</a>
+                <a href="index.html#testimonials">Testimoniale</a>
+                <a href="index.html#contact">Contact</a>
+            </nav>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars fa-lg"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <div class="container">
+            <nav>
+                <a href="index.html">
+                    <i class="fas fa-home"></i> Acasă
+                </a>
+                <i class="fas fa-chevron-right"></i>
+                <span>Despre Casa Denis</span>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="about-hero">
+        <div class="container">
+            <div class="about-hero-content">
+                <h1 id="detailed-title">Povestea Casa Denis</h1>
+                <p id="detailed-subtitle">
+                    Un centru after-school creat cu dragoste pentru a oferi copiilor un spațiu sigur de învățare, 
+                    dezvoltare și descoperire în fiecare zi după școală.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <main>
+        <!-- Misiunea noastră -->
+        <section class="detail-section">
+            <div class="container">
+                <div class="detail-card">
+                    <h3>
+                        <i class="fas fa-heart"></i>
+                        Misiunea noastră
+                    </h3>
+                    <p id="detailed-mission">
+                        La Casa Denis, credem că fiecare copil merită un mediu în care să se simtă în siguranță, 
+                        să fie ascultat și să își dezvolte potențialul unic. Misiunea noastră este să oferim un 
+                        program after-school de calitate care să completeze educația formală cu experiențe 
+                        practice, creative și sociale care formează caractere puternice și minti curioase.
+                    </p>
+                </div>
+
+                <!-- Statistics -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class="fas fa-users"></i>
+                        <h4 id="stat-children">50+</h4>
+                        <p>Copii îngrijiți</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h4 id="stat-years">3+</h4>
+                        <p>Ani de experiență</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-smile"></i>
+                        <h4 id="stat-satisfaction">100%</h4>
+                        <p>Părinți mulțumiți</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-clock"></i>
+                        <h4 id="stat-hours">11h</h4>
+                        <p>Zilnic deschis</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Valorile noastre -->
+        <section class="detail-section">
+            <div class="container">
+                <div class="detail-card">
+                    <h3>
+                        <i class="fas fa-star"></i>
+                        Valorile care ne ghidează
+                    </h3>
+                    <div class="detail-list" id="values-list">
+                        <div class="detail-list-item">
+                            <h4><i class="fas fa-shield-alt"></i> Siguranță</h4>
+                            <p>Mediul nostru este proiectat pentru siguranța fizică și emotională a fiecărui copil, cu personal instruit și protocoale clare.</p>
+                        </div>
+                        <div class="detail-list-item">
+                            <h4><i class="fas fa-users-cog"></i> Respect</h4>
+                            <p>Respectăm individualitatea fiecărui copil și îi încurajăm să își exprime personalitatea în mod autentic.</p>
+                        </div>
+                        <div class="detail-list-item">
+                            <h4><i class="fas fa-lightbulb"></i> Creativitate</h4>
+                            <p>Stimulăm gândirea creativă prin activități variate care dezvoltă imaginația și inovația.</p>
+                        </div>
+                        <div class="detail-list-item">
+                            <h4><i class="fas fa-hands-helping"></i> Colaborare</h4>
+                            <p>Învățăm copiii să lucreze în echipă și să dezvolte abilități sociale puternice pentru viitor.</p>
+                        </div>
+                        <div class="detail-list-item">
+                            <h4><i class="fas fa-graduation-cap"></i> Excelență</h4>
+                            <p>Căutăm întotdeauna să îmbunătățim serviciile noastre și să oferim experiențe de înaltă calitate.</p>
+                        </div>
+                        <div class="detail-list-item">
+                            <h4><i class="fas fa-heart"></i> Empatie</h4>
+                            <p>Dezvoltăm inteligența emoțională și capacitatea de a înțelege și sprijini pe alții.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ce oferim și prețuri -->
+        <section class="detail-section">
+            <div class="container">
+                <div class="detail-card">
+                    <h3>
+                        <i class="fas fa-tags"></i>
+                        Ce oferim și prețuri
+                    </h3>
+                    
+                    <!-- Servicii oferite -->
+                    <div class="services-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin: 2rem 0;">
+                        <div class="service-card" id="service-indoor-playground" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; border-radius: 16px; text-align: center; box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);">
+                            <i class="fas fa-gamepad" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.9;"></i>
+                            <h4 style="font-size: 1.5rem; margin-bottom: 1rem;">Spații de joacă interior</h4>
+                            <p style="opacity: 0.9; margin: 0;">Zone sigure și moderne pentru activități recreative în interior</p>
+                        </div>
+                        
+                        <div class="service-card" id="service-outdoor-playground" style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; padding: 2rem; border-radius: 16px; text-align: center; box-shadow: 0 10px 30px rgba(72, 187, 120, 0.3);">
+                            <i class="fas fa-tree" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.9;"></i>
+                            <h4 style="font-size: 1.5rem; margin-bottom: 1rem;">Spații de joacă exterior</h4>
+                            <p style="opacity: 0.9; margin: 0;">Grădină amenajată cu echipamente de joacă în aer liber</p>
+                        </div>
+                        
+                        <div class="service-card" id="service-mini-zoo" style="background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%); color: white; padding: 2rem; border-radius: 16px; text-align: center; box-shadow: 0 10px 30px rgba(237, 137, 54, 0.3);">
+                            <i class="fas fa-paw" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.9;"></i>
+                            <h4 style="font-size: 1.5rem; margin-bottom: 1rem;">Mini grădină zoologică</h4>
+                            <p style="opacity: 0.9; margin: 0;">Interacțiune cu animale prietenoase pentru dezvoltarea empatiei</p>
+                        </div>
+                        
+                        <div class="service-card" id="service-activities" style="background: linear-gradient(135deg, #ec4899 0%, #be185d 100%); color: white; padding: 2rem; border-radius: 16px; text-align: center; box-shadow: 0 10px 30px rgba(236, 72, 153, 0.3);">
+                            <i class="fas fa-palette" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.9;"></i>
+                            <h4 style="font-size: 1.5rem; margin-bottom: 1rem;">Activități recreative și didactice</h4>
+                            <p style="opacity: 0.9; margin: 0;">Programe variate pentru dezvoltarea creativității și învățării</p>
+                        </div>
+                    </div>
+
+                    <!-- Pachete și prețuri -->
+                    <div class="pricing-section" style="margin-top: 3rem;">
+                        <h4 style="text-align: center; color: #7c3aed; font-size: 2rem; margin-bottom: 2rem;">
+                            <i class="fas fa-coins"></i> Pachete și tarife
+                        </h4>
+                        
+                        <div class="pricing-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem;">
+                            <!-- Pachet complet -->
+                            <div class="pricing-card" id="pricing-full-program" style="background: white; border: 3px solid #7c3aed; border-radius: 20px; padding: 2.5rem; text-align: center; position: relative; box-shadow: 0 15px 35px rgba(124, 58, 237, 0.15); transition: transform 0.3s ease;">
+                                <div style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg, #7c3aed, #ec4899); color: white; padding: 0.5rem 2rem; border-radius: 50px; font-weight: 600; font-size: 0.9rem;">
+                                    POPULAR
+                                </div>
+                                <div style="background: linear-gradient(135deg, #7c3aed, #ec4899); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 3rem; margin-bottom: 1rem;">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <h5 style="color: #7c3aed; font-size: 1.8rem; margin-bottom: 1rem;">Program complet</h5>
+                                <div style="color: #6b7280; margin-bottom: 1.5rem; line-height: 1.6;">
+                                    <p id="full-program-schedule"><i class="fas fa-clock"></i> Program variabil: 07:00 - 17:00</p>
+                                    <p id="full-program-includes"><i class="fas fa-check"></i> Mic dejun inclus</p>
+                                </div>
+                                <div style="margin-bottom: 2rem;">
+                                    <span style="font-size: 3rem; font-weight: 800; color: #7c3aed;" id="full-program-price">100</span>
+                                    <span style="color: #6b7280; font-size: 1.2rem;"> lei/zi</span>
+                                </div>
+                                <div class="pricing-features" style="text-align: left; margin-bottom: 2rem;">
+                                    <div style="display: flex; align-items: center; margin-bottom: 0.5rem; color: #059669;">
+                                        <i class="fas fa-check-circle" style="margin-right: 0.5rem;"></i>
+                                        <span>Toate activitățile incluse</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; margin-bottom: 0.5rem; color: #059669;">
+                                        <i class="fas fa-check-circle" style="margin-right: 0.5rem;"></i>
+                                        <span>Masă caldă și gustări</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; margin-bottom: 0.5rem; color: #059669;">
+                                        <i class="fas fa-check-circle" style="margin-right: 0.5rem;"></i>
+                                        <span>Supravegherea specializată</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; color: #059669;">
+                                        <i class="fas fa-check-circle" style="margin-right: 0.5rem;"></i>
+                                        <span>Transport asigurat</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Vizite scurte -->
+                            <div class="pricing-card" id="pricing-short-visits" style="background: white; border: 2px solid #e5e7eb; border-radius: 20px; padding: 2.5rem; text-align: center; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08); transition: transform 0.3s ease;">
+                                <div style="color: #6b7280; font-size: 3rem; margin-bottom: 1rem;">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <h5 style="color: #374151; font-size: 1.8rem; margin-bottom: 1rem;">Vizite scurte</h5>
+                                <div style="color: #6b7280; margin-bottom: 1.5rem; line-height: 1.6;">
+                                    <p id="short-visits-description">Perfect pentru o experiență de câteva ore</p>
+                                </div>
+                                <div style="margin-bottom: 2rem;">
+                                    <span style="font-size: 3rem; font-weight: 800; color: #374151;" id="short-visits-price">20</span>
+                                    <span style="color: #6b7280; font-size: 1.2rem;"> lei/oră/persoană</span>
+                                </div>
+                                <div class="pricing-features" style="text-align: left; margin-bottom: 2rem;">
+                                    <div style="display: flex; align-items: center; margin-bottom: 0.5rem; color: #059669;">
+                                        <i class="fas fa-check-circle" style="margin-right: 0.5rem;"></i>
+                                        <span>Acces la toate spațiile</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; margin-bottom: 0.5rem; color: #059669;">
+                                        <i class="fas fa-check-circle" style="margin-right: 0.5rem;"></i>
+                                        <span>Activități recreative</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; margin-bottom: 0.5rem; color: #059669;">
+                                        <i class="fas fa-check-circle" style="margin-right: 0.5rem;"></i>
+                                        <span>Supravegherea asigurată</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; color: #6b7280;">
+                                        <i class="fas fa-times-circle" style="margin-right: 0.5rem;"></i>
+                                        <span>Fără masă inclusă</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Informații suplimentare -->
+                    <div style="background: #f8fafc; border-radius: 16px; padding: 2rem; margin-top: 2rem; border-left: 4px solid #7c3aed;">
+                        <h5 style="color: #7c3aed; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="fas fa-info-circle"></i>
+                            Informații importante
+                        </h5>
+                        <div id="pricing-info" style="color: #4b5563; line-height: 1.6;">
+                            <p>• Programul poate fi adaptat în funcție de nevoile fiecărei familii</p>
+                            <p>• Reduceri disponibile pentru înscrierea mai multor copii din aceeași familie</p>
+                            <p>• Toate activitățile sunt supravegheate de personal calificat</p>
+                            <p>• Pentru programări și informații suplimentare, vă rugăm să ne contactați</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Facilități și resurse -->
+        <section class="detail-section">
+            <div class="container">
+                <div class="detail-card">
+                    <h3>
+                        <i class="fas fa-building"></i>
+                        Facilitățile noastre
+                    </h3>
+                    <div class="detail-list" id="facilities-list">
+                        <div class="detail-list-item">
+                            <h4><i class="fas fa-book-reader"></i> Sală de studiu</h4>
+                            <p>Spațiu liniștit și bine organizat pentru realizarea temelor și activități educaționale, cu resurse didactice moderne.</p>
+                        </div>
+                        <div class="detail-list-item">
+                            <h4><i class="fas fa-palette"></i> Atelier de artă</h4>
+                            <p>Spațiu creativ echipat cu materiale de artă diverse pentru pictură, desen, sculptură și alte activități artistice.</p>
+                        </div>
+                        <div class="detail-list-item">
+                            <h4><i class="fas fa-utensils"></i> Bucătărie modernă</h4>
+                            <p>Bucătărie complet echipată pentru prepararea meselor sănătoase și atelierelor culinare pentru copii.</p>
+                        </div>
+                        <div class="detail-list-item">
+                            <h4><i class="fas fa-gamepad"></i> Zona de joacă interioară</h4>
+                            <p>Spațiu sigur pentru activități recreative, jocuri de societate și socializare între copii.</p>
+                        </div>
+                        <div class="detail-list-item">
+                            <h4><i class="fas fa-tree"></i> Grădină exterioară</h4>
+                            <p>Spațiu verde amenajat pentru activități în aer liber, jocuri și explorarea naturii.</p>
+                        </div>
+                        <div class="detail-list-item">
+                            <h4><i class="fas fa-laptop"></i> Zonă digitală</h4>
+                            <p>Acces controlat la tehnologie educațională pentru dezvoltarea competențelor digitale.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Istoricul nostru -->
+        <section class="detail-section">
+            <div class="container">
+                <div class="detail-card">
+                    <h3>
+                        <i class="fas fa-history"></i>
+                        Povestea noastră
+                    </h3>
+                    <div class="timeline" id="history-timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-year">2021</div>
+                            <div class="timeline-content">
+                                <h4>Începutul unei vise</h4>
+                                <p>Casa Denis a luat naștere din dorința de a crea un spațiu special pentru copii, unde să se simtă acasă după orele de școală.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-year">2022</div>
+                            <div class="timeline-content">
+                                <h4>Deschiderea oficială</h4>
+                                <p>După luni de pregătiri și amenajări, am deschis porțile pentru primii 20 de copii și familiile lor.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-year">2023</div>
+                            <div class="timeline-content">
+                                <h4>Expansiunea serviciilor</h4>
+                                <p>Am adăugat noi programe: ateliere de gătit, sesiuni de meditație pentru copii și clubul de lectură.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-year">2024</div>
+                            <div class="timeline-content">
+                                <h4>Recunoaștere și creștere</h4>
+                                <p>Am ajuns să îngrijim peste 50 de copii și am primit premiul pentru "Cel mai bun centru after-school" local.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-year">2025</div>
+                            <div class="timeline-content">
+                                <h4>Viitorul nostru</h4>
+                                <p>Continuăm să inovăm și să creștem, cu planuri pentru noi programe și servicii pentru comunitatea noastră.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action -->
+        <section class="cta-section">
+            <div class="container">
+                <div class="cta-content">
+                    <h2>Gata să faci parte din familia Casa Denis?</h2>
+                    <p>
+                        Înscrie-ți copilul astăzi și oferă-i șansa să învețe, să crească și să se distreze 
+                        într-un mediu sigur și stimulant. Suntem aici pentru tine și familia ta!
+                    </p>
+                    <div class="cta-buttons">
+                        <a href="index.html#contact" class="btn btn-primary btn-lg">
+                            <i class="fas fa-phone"></i>
+                            Contactează-ne acum
+                        </a>
+                        <a href="index.html#programs" class="btn btn-white btn-lg">
+                            <i class="fas fa-book-open"></i>
+                            Vezi programele noastre
+                        </a>
+                        <a href="gallery.html" class="btn btn-outline btn-lg" style="color: white; border-color: white;">
+                            <i class="fas fa-images"></i>
+                            Vizitează galeria
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-logo">
+                        <img src="images/logo.png" alt="Casa Denis Logo" width="60" height="60">
+                        <span class="logo-text">Casa Denis</span>
+                    </div>
+                    <p class="footer-about">Un loc unde copiii învață, se dezvoltă și se distrează într-un mediu sigur și stimulant.</p>
+                    <div class="social-links">
+                        <a href="https://www.instagram.com/casa_denis_?igsh=MXZicXNxamE3bGgxYg%3D%3D&utm_source=qr" target="_blank">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://www.facebook.com/share/16Unfd6ZEv/?mibextid=wwXIfr" target="_blank">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h3>Link-uri rapide</h3>
+                    <ul>
+                        <li><a href="index.html">Acasă</a></li>
+                        <li><a href="index.html#about">Despre noi</a></li>
+                        <li><a href="index.html#programs">Programe</a></li>
+                        <li><a href="index.html#schedule">Program</a></li>
+                        <li><a href="index.html#team">Închiriere spațiu</a></li>
+                        <li><a href="index.html#gallery">Galerie</a></li>
+                        <li><a href="index.html#testimonials">Testimoniale</a></li>
+                        <li><a href="index.html#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h3>Contact</h3>
+                    <ul>
+                        <li><i class="far fa-clock"></i> Luni - Vineri: 07:00 - 18:00</li>
+                        <li><i class="fas fa-phone"></i> +40 740 490 171, +40 740 096 051</li>
+                        <li><i class="fas fa-envelope"></i> casa.denis2025@gmail.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© <script>document.write(new Date().getFullYear())</script> Casa Denis. Toate drepturile rezervate.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Load detailed about data from API
+        async function loadDetailedAbout() {
+            try {
+                const response = await fetch('/api/about-detailed');
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // Update hero content - check both direct and nested hero structure
+                    const heroTitle = data.hero?.title || data.title;
+                    const heroSubtitle = data.hero?.subtitle || data.subtitle;
+                    
+                    if (heroTitle) document.getElementById('detailed-title').textContent = heroTitle;
+                    if (heroSubtitle) document.getElementById('detailed-subtitle').textContent = heroSubtitle;
+                    // Handle mission - check if it's an object with content property or direct string
+                    const missionText = typeof data.mission === 'object' ? data.mission.content : data.mission;
+                    if (missionText) document.getElementById('detailed-mission').textContent = missionText;
+                    
+                    // Update statistics
+                    if (data.stats) {
+                        if (data.stats.children) document.getElementById('stat-children').textContent = data.stats.children;
+                        if (data.stats.years) document.getElementById('stat-years').textContent = data.stats.years;
+                        if (data.stats.satisfaction) document.getElementById('stat-satisfaction').textContent = data.stats.satisfaction;
+                        if (data.stats.hours) document.getElementById('stat-hours').textContent = data.stats.hours;
+                    }
+                    
+                    // Update values list
+                    if (data.values && data.values.length > 0) {
+                        const valuesList = document.getElementById('values-list');
+                        valuesList.innerHTML = '';
+                        data.values.forEach(value => {
+                            valuesList.innerHTML += `
+                                <div class="detail-list-item">
+                                    <h4><i class="${value.icon}"></i> ${value.title}</h4>
+                                    <p>${value.description}</p>
+                                </div>
+                            `;
+                        });
+                    }
+                    
+                    // Update facilities list
+                    if (data.facilities && data.facilities.length > 0) {
+                        const facilitiesList = document.getElementById('facilities-list');
+                        facilitiesList.innerHTML = '';
+                        data.facilities.forEach(facility => {
+                            facilitiesList.innerHTML += `
+                                <div class="detail-list-item">
+                                    <h4><i class="${facility.icon}"></i> ${facility.title}</h4>
+                                    <p>${facility.description}</p>
+                                </div>
+                            `;
+                        });
+                    }
+                    
+                    // Update timeline
+                    if (data.history && data.history.length > 0) {
+                        const timeline = document.getElementById('history-timeline');
+                        timeline.innerHTML = '';
+                        data.history.forEach(item => {
+                            timeline.innerHTML += `
+                                <div class="timeline-item">
+                                    <div class="timeline-year">${item.year}</div>
+                                    <div class="timeline-content">
+                                        <h4>${item.title}</h4>
+                                        <p>${item.description}</p>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    }
+
+                    // Update pricing and services
+                    if (data.pricing) {
+                        const pricingData = data.pricing.data || data.pricing;
+                        
+                        if (pricingData.section_title) {
+                            const pricingSectionTitle = document.querySelector('.pricing-section h4');
+                            if (pricingSectionTitle) {
+                                pricingSectionTitle.innerHTML = `<i class="fas fa-coins"></i> ${pricingData.section_title}`;
+                            }
+                        }
+                        
+                        if (pricingData.section_subtitle) {
+                            // Add subtitle if it doesn't exist
+                            const pricingSection = document.querySelector('.pricing-section');
+                            let subtitleElement = pricingSection.querySelector('.pricing-subtitle');
+                            if (!subtitleElement && pricingData.section_subtitle.trim()) {
+                                subtitleElement = document.createElement('p');
+                                subtitleElement.className = 'pricing-subtitle';
+                                subtitleElement.style.cssText = 'text-align: center; color: #6b7280; font-size: 1.1rem; margin-bottom: 1rem;';
+                                pricingSection.querySelector('h4').parentNode.insertBefore(subtitleElement, pricingSection.querySelector('.pricing-grid'));
+                            }
+                            if (subtitleElement) {
+                                subtitleElement.textContent = pricingData.section_subtitle;
+                            }
+                        }
+                        
+                        // Update full program details
+                        if (pricingData.full_program_name) {
+                            const fullProgramTitle = document.querySelector('#pricing-full-program h5');
+                            if (fullProgramTitle) fullProgramTitle.textContent = pricingData.full_program_name;
+                        }
+                        
+                        if (pricingData.full_program_badge) {
+                            const badgeElement = document.querySelector('#pricing-full-program .pricing-card div[style*="position: absolute"]');
+                            if (badgeElement) {
+                                badgeElement.textContent = pricingData.full_program_badge.toUpperCase();
+                            }
+                        }
+                        
+                        // Update pricing display with currency
+                        if (pricingData.full_program_price && pricingData.full_program_currency) {
+                            const fullProgramPriceSpan = document.getElementById('full-program-price');
+                            const fullProgramCurrencySpan = fullProgramPriceSpan?.nextElementSibling;
+                            if (fullProgramPriceSpan) fullProgramPriceSpan.textContent = pricingData.full_program_price;
+                            if (fullProgramCurrencySpan) fullProgramCurrencySpan.textContent = ` ${pricingData.full_program_currency}`;
+                        }
+                        
+                        if (pricingData.short_visits_price && pricingData.short_visits_currency) {
+                            const shortVisitsPriceSpan = document.getElementById('short-visits-price');
+                            const shortVisitsCurrencySpan = shortVisitsPriceSpan?.nextElementSibling;
+                            if (shortVisitsPriceSpan) shortVisitsPriceSpan.textContent = pricingData.short_visits_price;
+                            if (shortVisitsCurrencySpan) shortVisitsCurrencySpan.textContent = ` ${pricingData.short_visits_currency}`;
+                        }
+                        
+                        // Update short visits name
+                        if (pricingData.short_visits_name) {
+                            const shortVisitsTitle = document.querySelector('#pricing-short-visits h5');
+                            if (shortVisitsTitle) shortVisitsTitle.textContent = pricingData.short_visits_name;
+                        }
+                        
+                        // Update features for full program
+                        if (pricingData.full_program_features) {
+                            const fullProgramFeatures = document.querySelector('#pricing-full-program .pricing-features');
+                            if (fullProgramFeatures) {
+                                const features = pricingData.full_program_features.split('\n').filter(f => f.trim());
+                                fullProgramFeatures.innerHTML = features.map(feature => `
+                                    <div style="display: flex; align-items: center; margin-bottom: 0.5rem; color: #059669;">
+                                        <i class="fas fa-check-circle" style="margin-right: 0.5rem;"></i>
+                                        <span>${feature.trim()}</span>
+                                    </div>
+                                `).join('');
+                            }
+                        }
+                        
+                        // Update features for short visits
+                        if (pricingData.short_visits_features) {
+                            const shortVisitsFeatures = document.querySelector('#pricing-short-visits .pricing-features');
+                            if (shortVisitsFeatures) {
+                                const features = pricingData.short_visits_features.split('\n').filter(f => f.trim());
+                                const excluded = pricingData.short_visits_excluded ? pricingData.short_visits_excluded.split('\n').filter(f => f.trim()) : [];
+                                
+                                let featuresHTML = features.map(feature => `
+                                    <div style="display: flex; align-items: center; margin-bottom: 0.5rem; color: #059669;">
+                                        <i class="fas fa-check-circle" style="margin-right: 0.5rem;"></i>
+                                        <span>${feature.trim()}</span>
+                                    </div>
+                                `).join('');
+                                
+                                if (excluded.length > 0) {
+                                    featuresHTML += excluded.map(feature => `
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.5rem; color: #6b7280;">
+                                            <i class="fas fa-times-circle" style="margin-right: 0.5rem;"></i>
+                                            <span>${feature.trim()}</span>
+                                        </div>
+                                    `).join('');
+                                }
+                                
+                                shortVisitsFeatures.innerHTML = featuresHTML;
+                            }
+                        }
+                        
+                        // Update pricing info title and content
+                        if (pricingData.pricing_info_title) {
+                            const pricingInfoTitle = document.querySelector('#pricing-info').parentElement.querySelector('h5');
+                            if (pricingInfoTitle) {
+                                pricingInfoTitle.innerHTML = `<i class="fas fa-info-circle"></i> ${pricingData.pricing_info_title}`;
+                            }
+                        }
+                        
+                        // Update pricing info content
+                        if (pricingData.pricing_info) {
+                            const pricingInfoContent = document.getElementById('pricing-info');
+                            if (pricingInfoContent) {
+                                pricingInfoContent.innerHTML = pricingData.pricing_info;
+                            }
+                        }
+                    }
+
+                    // Load and update service cards from API
+                    try {
+                        console.log('🔄 Loading services for about-detailed...');
+                        const servicesResponse = await fetch('/api/about-detailed/services');
+                        if (servicesResponse.ok) {
+                            const servicesData = await servicesResponse.json();
+                            console.log('📥 Services data received:', servicesData);
+                            
+                            let services = [];
+                            if (servicesData.data && Array.isArray(servicesData.data)) {
+                                services = servicesData.data;
+                            } else if (Array.isArray(servicesData)) {
+                                services = servicesData;
+                            }
+                            
+                            console.log('🎯 Processing services:', services);
+                            
+                            // Find the services container
+                            const servicesContainer = document.querySelector('.services-grid') || document.querySelector('#services-section .container > div:last-child');
+                            
+                            if (servicesContainer) {
+                                // Always clear existing services first (including hardcoded ones)
+                                servicesContainer.innerHTML = '';
+                                
+                                if (services.length > 0) {
+                                    // Create new service cards dynamically
+                                    services.forEach((service, index) => {
+                                        console.log(`🔧 Creating service ${index + 1}:`, service);
+                                        
+                                        const serviceCard = document.createElement('div');
+                                        serviceCard.className = 'service-card';
+                                        serviceCard.id = `service-${index}`;
+                                        
+                                        // Set background color/gradient
+                                        let backgroundStyle = '';
+                                        if (service.color) {
+                                            if (/^#([0-9A-Fa-f]{6})$/.test(service.color)) {
+                                                backgroundStyle = `background: linear-gradient(135deg, ${service.color} 0%, ${service.color}dd 100%);`;
+                                            } else {
+                                                backgroundStyle = `background: ${service.color};`;
+                                            }
+                                        }
+                                        
+                                        serviceCard.innerHTML = `
+                                            <div class="service-icon" style="color: white; font-size: 3rem; margin-bottom: 1rem;">
+                                                <i class="${service.icon || 'fas fa-star'}"></i>
+                                            </div>
+                                            <h4 style="color: white; font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem;">${service.title}</h4>
+                                            <p style="color: rgba(255,255,255,0.9); line-height: 1.6;">${service.description}</p>
+                                        `;
+                                        
+                                        serviceCard.style.cssText = `
+                                            ${backgroundStyle}
+                                            padding: 2rem;
+                                            border-radius: 16px;
+                                            text-align: center;
+                                            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+                                            transition: transform 0.3s ease, box-shadow 0.3s ease;
+                                            cursor: pointer;
+                                        `;
+                                        
+                                        // Add hover effect
+                                        serviceCard.addEventListener('mouseenter', () => {
+                                            serviceCard.style.transform = 'translateY(-5px)';
+                                            serviceCard.style.boxShadow = '0 15px 35px rgba(0,0,0,0.2)';
+                                        });
+                                        
+                                        serviceCard.addEventListener('mouseleave', () => {
+                                            serviceCard.style.transform = 'translateY(0)';
+                                            serviceCard.style.boxShadow = '0 8px 25px rgba(0,0,0,0.1)';
+                                        });
+                                        
+                                        servicesContainer.appendChild(serviceCard);
+                                        console.log(`✅ Created service card: ${service.title}`);
+                                    });
+                                    
+                                    console.log('✅ All services created successfully');
+                                } else {
+                                    // No services available - show a message
+                                    servicesContainer.innerHTML = `
+                                        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: #6b7280;">
+                                            <i class="fas fa-info-circle" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                                            <p style="margin: 0; font-size: 1.1rem;">Nu sunt servicii configurate momentan.</p>
+                                        </div>
+                                    `;
+                                    console.log('⚠️ No services found in API response - showing message');
+                                }
+                            } else {
+                                console.error('❌ Services container not found');
+                            }
+                        } else {
+                            console.error('❌ Failed to load services:', servicesResponse.status);
+                        }
+                    } catch (error) {
+                        console.error('❌ Error loading services:', error);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading detailed about:', error);
+            }
+        }
+
+        // Mobile menu functionality
+        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+            const nav = document.querySelector('nav');
+            nav.style.display = nav.style.display === 'block' ? 'none' : 'block';
+        });
+
+        // Load data when page loads
+        document.addEventListener('DOMContentLoaded', loadDetailedAbout);
+    </script>
+</body>
+</html>

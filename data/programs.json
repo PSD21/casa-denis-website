@@ -1,0 +1,44 @@
+[
+  {
+    "id": "94f5e2b5-03c3-473f-a8c0-2e9331bd0d0f",
+    "title": "Asitenta teme ",
+    "icon": "fas fa-book-open",
+    "description": "Oferim sprijin pentru teme și proiecte școlare, asigurându-ne că fiecare copil înțelege și își completează sarcinile.",
+    "color": "#db2777"
+  },
+  { 
+    "id": "3bff642f-5730-4f7a-9177-b8c35217f9be",
+    "title": "Arte și meșteșuguri",
+    "icon": "fas fa-palette",
+    "description": "Activități creative care stimulează imaginația și dezvoltă abilitățile motorii fine ale copiilor.",
+    "color": "#7c3aed"
+  },
+  {
+    "id": "d4884ce4-beed-42cf-a3cb-df7fb226a007",
+    "title": "Muzică și dans",
+    "icon": "fas fa-music",
+    "description": "Lecții de muzică și dans care încurajează exprimarea de sine și dezvoltarea talentelor artistice.",
+    "color": "#d97706"
+  },
+  {
+    "id": "7557c9dd-ef81-4b19-8bff-3d164e399cfb",
+    "title": "Jocuri educative",
+    "icon": "fas fa-puzzle-piece",
+    "description": "Jocuri interactive care dezvoltă gândirea logică, memoria și abilitățile de rezolvare a problemelor.",
+    "color": "#16a34a"
+  },
+  {
+    "id": "b40056f2-659f-48a7-ad0f-e417c97c3a18",
+    "title": "Activități sociale",
+    "icon": "fas fa-users",
+    "description": "Activități de grup care dezvoltă abilitățile sociale și emoționale ale copiilor.",
+    "color": "#2563eb"
+  },
+  {
+    "id": "dd757446-e297-4735-bc18-a1bb4ced0535",
+    "title": "Excursii și evenimente",
+    "icon": "fas fa-users",
+    "description": "Excursii educative și evenimente speciale organizate periodic pentru a îmbogăți experiența copiilor.",
+    "color": "#ea580c"
+  }
+]
