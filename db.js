@@ -4,7 +4,29 @@ const fs = require('fs').promises;
 
 // Railway provides these environment variables automatically
 const dbConfig = (() => {
-    // First try Railway's standard MySQL environment variables
+    // First try DATABASE_URL format (Railway's preferred method)
+    if (process.env.DATABASE_URL && process.env.DATABASE_URL.startsWith('mysql://')) {
+        console.log('🔧 Using DATABASE_URL');
+        try {
+            const url = new URL(process.env.DATABASE_URL);
+            return {
+                host: url.hostname,
+                user: url.username,
+                password: url.password,
+                database: url.pathname.slice(1),
+                port: parseInt(url.port) || 3306,
+                charset: 'utf8mb4',
+                waitForConnections: true,
+                connectionLimit: 10,
+                queueLimit: 0,
+                ssl: { rejectUnauthorized: false }
+            };
+        } catch (error) {
+            console.log('⚠️ Invalid DATABASE_URL format, trying individual variables');
+        }
+    }
+    
+    // Try Railway's MySQL environment variables (MYSQL prefix)
     if (process.env.MYSQLHOST && process.env.MYSQLUSER && process.env.MYSQLPASSWORD && process.env.MYSQLDATABASE) {
         console.log('🔧 Using Railway MySQL environment variables');
         return {
@@ -21,16 +43,15 @@ const dbConfig = (() => {
         };
     }
     
-    // Then try DATABASE_URL format
-    if (process.env.DATABASE_URL) {
-        console.log('🔧 Using DATABASE_URL');
-        const url = new URL(process.env.DATABASE_URL);
+    // Try Railway's DB environment variables (DB_ prefix)
+    if (process.env.DB_HOST && process.env.DB_USER && process.env.DB_PASSWORD && process.env.DB_NAME) {
+        console.log('🔧 Using Railway DB environment variables');
         return {
-            host: url.hostname,
-            user: url.username,
-            password: url.password,
-            database: url.pathname.slice(1),
-            port: parseInt(url.port) || 3306,
+            host: process.env.DB_HOST,
+            user: process.env.DB_USER,
+            password: process.env.DB_PASSWORD,
+            database: process.env.DB_NAME,
+            port: parseInt(process.env.DB_PORT) || 3306,
             charset: 'utf8mb4',
             waitForConnections: true,
             connectionLimit: 10,
@@ -39,14 +60,14 @@ const dbConfig = (() => {
         };
     }
     
-    // Fallback to individual environment variables or defaults
-    console.log('🔧 Using individual DB environment variables');
+    // Fallback to localhost for development
+    console.log('🔧 Using localhost fallback (development mode)');
     return {
-        host: process.env.DB_HOST || 'localhost',
-        user: process.env.DB_USER || 'root',
-        password: process.env.DB_PASSWORD || '',
-        database: process.env.DB_NAME || 'casa_denis_db',
-        port: parseInt(process.env.DB_PORT) || 3306,
+        host: 'localhost',
+        user: 'root',
+        password: '',
+        database: 'casa_denis_db',
+        port: 3306,
         charset: 'utf8mb4',
         waitForConnections: true,
         connectionLimit: 10,
@@ -66,12 +87,14 @@ console.log('Database Config:', {
 
 // Debug Railway environment variables
 console.log('Railway Environment Check:', {
+    DATABASE_URL: !!process.env.DATABASE_URL,
+    DB_HOST: !!process.env.DB_HOST,
+    DB_USER: !!process.env.DB_USER,
+    DB_PASSWORD: !!process.env.DB_PASSWORD,
+    DB_NAME: !!process.env.DB_NAME,
+    DB_PORT: process.env.DB_PORT,
     MYSQLHOST: !!process.env.MYSQLHOST,
     MYSQLUSER: !!process.env.MYSQLUSER,
-    MYSQLPASSWORD: !!process.env.MYSQLPASSWORD,
-    MYSQLDATABASE: !!process.env.MYSQLDATABASE,
-    MYSQLPORT: process.env.MYSQLPORT,
-    DATABASE_URL: !!process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV
 });
 
