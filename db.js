@@ -75,6 +75,24 @@ console.log('Railway Environment Check:', {
     NODE_ENV: process.env.NODE_ENV
 });
 
+// Show actual values (safely) for debugging
+if (process.env.MYSQLHOST) {
+    console.log('🔍 MySQL Host:', process.env.MYSQLHOST);
+    console.log('🔍 MySQL Port:', process.env.MYSQLPORT);
+    console.log('🔍 MySQL Database:', process.env.MYSQLDATABASE);
+    console.log('🔍 MySQL User:', process.env.MYSQLUSER);
+} else if (process.env.DATABASE_URL) {
+    const url = new URL(process.env.DATABASE_URL);
+    console.log('🔍 Database URL Host:', url.hostname);
+    console.log('🔍 Database URL Port:', url.port);
+    console.log('🔍 Database URL Database:', url.pathname.slice(1));
+} else {
+    console.log('❌ NO RAILWAY MYSQL VARIABLES FOUND!');
+    console.log('Available env vars:', Object.keys(process.env).filter(key => 
+        key.includes('MYSQL') || key.includes('DATABASE') || key.includes('DB_')
+    ));
+}
+
 const pool = mysql.createPool(dbConfig);
 
 async function setupDatabase() {
