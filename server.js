@@ -248,40 +248,8 @@ const pool = mysql.createPool({
 // SIMPLE FIX: Just add these lines to your server.js file
 // Find the MySQL pool creation and replace it with this:
 
-// Parse Railway's DATABASE_URL if available
-let dbConfig;
-if (process.env.DATABASE_URL) {
-    // Parse the DATABASE_URL for Railway
-    const url = new URL(process.env.DATABASE_URL);
-    dbConfig = {
-        host: url.hostname,
-        user: url.username,
-        password: url.password,
-        database: url.pathname.slice(1),
-        port: url.port || 3306,
-        waitForConnections: true,
-        connectionLimit: 10,
-        queueLimit: 0,
-        charset: 'utf8mb4'
-    };
-    console.log('🔧 Using Railway DATABASE_URL connection');
-} else {
-    // Use individual environment variables
-    dbConfig = {
-        host: process.env.DB_HOST || 'localhost',
-        user: process.env.DB_USER || 'root',
-        password: process.env.DB_PASSWORD || '',
-        database: process.env.DB_NAME || 'casa_denis_db',
-        port: process.env.DB_PORT || 3306,
-        waitForConnections: true,
-        connectionLimit: 10,
-        queueLimit: 0,
-        charset: 'utf8mb4'
-    };
-    console.log('🔧 Using individual DB environment variables');
-}
-
-const pool = mysql.createPool(dbConfig);
+// Use the database configuration from db.js
+const { pool } = require('./db.js');
 
 // Test database connection and setup
 async function setupDatabase() {
