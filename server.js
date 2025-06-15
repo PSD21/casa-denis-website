@@ -245,35 +245,29 @@ const pool = mysql.createPool({
 });
 */
 
-// Since MySQL is not available, we'll use only JSON files
-// Add this code to the top of your server.js file, right after the require statements
-// and before the MySQL pool creation
+// SIMPLE FIX: Just add these lines to your server.js file
+// Find the MySQL pool creation and replace it with this:
 
-// Parse DATABASE_URL for Railway compatibility
-function parseConnectionConfig() {
-    // If DATABASE_URL is provided (Railway), parse it
-    if (process.env.DATABASE_URL) {
-        try {
-            const url = new URL(process.env.DATABASE_URL);
-            return {
-                host: url.hostname,
-                user: url.username,
-                password: url.password,
-                database: url.pathname.slice(1), // Remove leading '/'
-                port: url.port || 3306,
-                waitForConnections: true,
-                connectionLimit: 10,
-                queueLimit: 0,
-                charset: 'utf8mb4'
-            };
-        } catch (error) {
-            console.error('Error parsing DATABASE_URL:', error);
-            // Fall back to individual variables
-        }
-    }
-    
-    // Use individual environment variables (local development)
-    return {
+// Parse Railway's DATABASE_URL if available
+let dbConfig;
+if (process.env.DATABASE_URL) {
+    // Parse the DATABASE_URL for Railway
+    const url = new URL(process.env.DATABASE_URL);
+    dbConfig = {
+        host: url.hostname,
+        user: url.username,
+        password: url.password,
+        database: url.pathname.slice(1),
+        port: url.port || 3306,
+        waitForConnections: true,
+        connectionLimit: 10,
+        queueLimit: 0,
+        charset: 'utf8mb4'
+    };
+    console.log('🔧 Using Railway DATABASE_URL connection');
+} else {
+    // Use individual environment variables
+    dbConfig = {
         host: process.env.DB_HOST || 'localhost',
         user: process.env.DB_USER || 'root',
         password: process.env.DB_PASSWORD || '',
@@ -284,17 +278,10 @@ function parseConnectionConfig() {
         queueLimit: 0,
         charset: 'utf8mb4'
     };
+    console.log('🔧 Using individual DB environment variables');
 }
 
-// Create MySQL connection pool with Railway support
-const dbConfig = parseConnectionConfig();
 const pool = mysql.createPool(dbConfig);
-
-console.log('🔧 Database configuration:');
-console.log(`   Host: ${dbConfig.host}`);
-console.log(`   Database: ${dbConfig.database}`);
-console.log(`   User: ${dbConfig.user}`);
-console.log(`   Connection method: ${process.env.DATABASE_URL ? 'DATABASE_URL' : 'Individual variables'}`);
 
 // Test database connection and setup
 async function setupDatabase() {
