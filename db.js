@@ -46,6 +46,7 @@ const dbConfig = (() => {
     // Try Railway's DB environment variables (DB_ prefix)
     if (process.env.DB_HOST && process.env.DB_USER && process.env.DB_PASSWORD && process.env.DB_NAME) {
         console.log('🔧 Using Railway DB environment variables');
+        console.log('🔍 Raw values - Host:', process.env.DB_HOST, 'User:', process.env.DB_USER, 'DB:', process.env.DB_NAME);
         return {
             host: process.env.DB_HOST,
             user: process.env.DB_USER,
@@ -98,17 +99,34 @@ console.log('Railway Environment Check:', {
     NODE_ENV: process.env.NODE_ENV
 });
 
+// Debug actual values (first few characters only for security)
+console.log('Variable Values Check:', {
+    DB_HOST_length: process.env.DB_HOST ? process.env.DB_HOST.length : 0,
+    DB_USER_length: process.env.DB_USER ? process.env.DB_USER.length : 0,
+    DB_NAME_length: process.env.DB_NAME ? process.env.DB_NAME.length : 0,
+    DB_HOST_starts: process.env.DB_HOST ? process.env.DB_HOST.substring(0, 10) + '...' : 'undefined'
+});
+
 // Show actual values (safely) for debugging
-if (process.env.MYSQLHOST) {
+if (process.env.DB_HOST) {
+    console.log('🔍 DB Host:', process.env.DB_HOST);
+    console.log('🔍 DB Port:', process.env.DB_PORT || '3306');
+    console.log('🔍 DB Database:', process.env.DB_NAME);
+    console.log('🔍 DB User:', process.env.DB_USER);
+} else if (process.env.MYSQLHOST) {
     console.log('🔍 MySQL Host:', process.env.MYSQLHOST);
     console.log('🔍 MySQL Port:', process.env.MYSQLPORT);
     console.log('🔍 MySQL Database:', process.env.MYSQLDATABASE);
     console.log('🔍 MySQL User:', process.env.MYSQLUSER);
 } else if (process.env.DATABASE_URL) {
-    const url = new URL(process.env.DATABASE_URL);
-    console.log('🔍 Database URL Host:', url.hostname);
-    console.log('🔍 Database URL Port:', url.port);
-    console.log('🔍 Database URL Database:', url.pathname.slice(1));
+    try {
+        const url = new URL(process.env.DATABASE_URL);
+        console.log('🔍 Database URL Host:', url.hostname);
+        console.log('🔍 Database URL Port:', url.port);
+        console.log('🔍 Database URL Database:', url.pathname.slice(1));
+    } catch (error) {
+        console.log('⚠️ Invalid DATABASE_URL format');
+    }
 } else {
     console.log('❌ NO RAILWAY MYSQL VARIABLES FOUND!');
     console.log('Available env vars:', Object.keys(process.env).filter(key => 
