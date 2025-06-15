@@ -102,9 +102,11 @@ console.log('Railway Environment Check:', {
 
 // Debug actual values (first few characters only for security)
 console.log('Variable Values Check:', {
+    MYSQLHOST_length: process.env.MYSQLHOST ? process.env.MYSQLHOST.length : 0,
+    MYSQLUSER_length: process.env.MYSQLUSER ? process.env.MYSQLUSER.length : 0,
+    MYSQLDATABASE_length: process.env.MYSQLDATABASE ? process.env.MYSQLDATABASE.length : 0,
+    MYSQLHOST_starts: process.env.MYSQLHOST ? process.env.MYSQLHOST.substring(0, 15) + '...' : 'undefined',
     DB_HOST_length: process.env.DB_HOST ? process.env.DB_HOST.length : 0,
-    DB_USER_length: process.env.DB_USER ? process.env.DB_USER.length : 0,
-    DB_NAME_length: process.env.DB_NAME ? process.env.DB_NAME.length : 0,
     DB_HOST_starts: process.env.DB_HOST ? process.env.DB_HOST.substring(0, 10) + '...' : 'undefined'
 });
 
