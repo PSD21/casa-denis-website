@@ -1125,17 +1125,43 @@ const uploadGallery = multer({
     }
 });
 
-// Get all gallery images
+// Get all gallery images from database
 app.get('/api/gallery', async (req, res) => {
     try {
-        const gallery = await readData(dataPath.gallery);
-        // Sort by upload date (newest first)
-        const sortedGallery = gallery.sort((a, b) => 
-            new Date(b.uploadDate || 0) - new Date(a.uploadDate || 0)
-        );
-        res.json(sortedGallery);
+        const [rows] = await pool.execute(`
+            SELECT id, title, description, mime_type, file_size, width, height, 
+                   alt_text, category, order_index, created_at,
+                   CASE 
+                       WHEN image_data IS NOT NULL THEN CONCAT('/api/gallery/image/', id)
+                       ELSE image_path 
+                   END as src
+            FROM gallery_items 
+            WHERE is_active = TRUE 
+            ORDER BY created_at DESC
+        `);
+        
+        // Transform to match frontend format
+        const gallery = rows.map(row => ({
+            id: row.id,
+            src: row.src,
+            alt: row.alt_text || row.title,
+            title: row.title,
+            description: row.description,
+            width: row.width,
+            height: row.height,
+            aspectRatio: row.width && row.height ? row.width / row.height : 1,
+            imageType: row.width && row.height ? 
+                (row.width / row.height > 1.3 ? 'wide' : 
+                 row.width / row.height < 0.8 ? 'tall' : 'square') : 'square',
+            category: row.category,
+            uploadDate: row.created_at,
+            size: row.file_size,
+            mimeType: row.mime_type
+        }));
+        
+        res.json(gallery);
     } catch (error) {
-        console.error('Error loading gallery:', error);
+        console.error('Error loading gallery from database:', error);
         res.status(500).json({ 
             success: false,
             error: 'Eroare la încărcarea galeriei' 
@@ -1143,7 +1169,44 @@ app.get('/api/gallery', async (req, res) => {
     }
 });
 
-// Upload new image to gallery
+// Serve image from database
+app.get('/api/gallery/image/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        const [rows] = await pool.execute(
+            'SELECT image_data, mime_type, title FROM gallery_items WHERE id = ? AND is_active = TRUE',
+            [id]
+        );
+        
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'Imaginea nu a fost găsită' });
+        }
+        
+        const { image_data, mime_type, title } = rows[0];
+        
+        if (!image_data) {
+            return res.status(404).json({ error: 'Datele imaginii nu sunt disponibile' });
+        }
+        
+        // Set cache headers for better performance
+        res.set({
+            'Content-Type': mime_type,
+            'Content-Length': image_data.length,
+            'Cache-Control': 'public, max-age=31536000', // 1 year cache
+            'ETag': `"${id}"`,
+            'Content-Disposition': `inline; filename="${title || 'image'}.${mime_type.split('/')[1]}"`
+        });
+        
+        res.send(image_data);
+        
+    } catch (error) {
+        console.error('Error serving image:', error);
+        res.status(500).json({ error: 'Eroare la încărcarea imaginii' });
+    }
+});
+
+// Upload new image to database
 app.post('/api/gallery/upload', uploadGallery.single('image'), async (req, res) => {
     try {
         if (!req.file) {
@@ -1153,10 +1216,10 @@ app.post('/api/gallery/upload', uploadGallery.single('image'), async (req, res) 
             });
         }
 
-        const { alt } = req.body;
+        const { title, description, category } = req.body;
         
-        if (!alt || alt.trim() === '') {
-            // Delete the uploaded file if alt text is missing
+        if (!title || title.trim() === '') {
+            // Delete the uploaded file if title is missing
             try {
                 await fs.unlink(req.file.path);
             } catch (unlinkError) {
@@ -1164,64 +1227,90 @@ app.post('/api/gallery/upload', uploadGallery.single('image'), async (req, res) 
             }
             return res.status(400).json({ 
                 success: false,
-                error: 'Descrierea imaginii este obligatorie' 
+                error: 'Titlul imaginii este obligatoriu' 
             });
         }
 
-        // Get image dimensions using sharp or image-size
+        // Check if title + description combination already exists
+        const [existing] = await pool.execute(
+            'SELECT id FROM gallery_items WHERE title = ? AND description = ? AND is_active = TRUE',
+            [title.trim(), description?.trim() || '']
+        );
+        
+        if (existing.length > 0) {
+            // Delete the uploaded file
+            try {
+                await fs.unlink(req.file.path);
+            } catch (unlinkError) {
+                console.warn('Could not delete file:', unlinkError.message);
+            }
+            return res.status(400).json({ 
+                success: false,
+                error: 'Există deja o imagine cu acest titlu și descriere' 
+            });
+        }
+
+        // Read image file into buffer
+        const imageBuffer = await fs.readFile(req.file.path);
+        
+        // Get image dimensions using sharp
         const sharp = require('sharp');
-        let width = 0, height = 0, aspectRatio = 1;
+        let width = 0, height = 0;
         
         try {
             const metadata = await sharp(req.file.path).metadata();
             width = metadata.width || 0;
             height = metadata.height || 0;
-            aspectRatio = width > 0 && height > 0 ? width / height : 1;
         } catch (dimensionError) {
             console.warn('Could not get image dimensions:', dimensionError.message);
         }
 
-        // Load existing gallery data
-        const gallery = await readData(dataPath.gallery);
-        
-        // Determine image type based on aspect ratio
-        let imageType = 'square';
-        if (aspectRatio > 1.3) {
-            imageType = 'wide'; // Landscape/wide images
-        } else if (aspectRatio < 0.8) {
-            imageType = 'tall'; // Portrait images
-        }
-        
-        // Create new gallery item with dimension data
-        const newItem = {
-            id: uuidv4(),
-            src: `images/${req.file.filename}`,
-            alt: alt.trim(),
-            uploadDate: new Date().toISOString(),
-            size: req.file.size,
-            filename: req.file.filename,
+        // Insert into database
+        const [result] = await pool.execute(`
+            INSERT INTO gallery_items 
+            (title, description, image_data, mime_type, file_size, width, height, alt_text, category, is_active) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, TRUE)
+        `, [
+            title.trim(),
+            description?.trim() || '',
+            imageBuffer,
+            req.file.mimetype,
+            req.file.size,
             width,
             height,
-            aspectRatio,
-            imageType
-        };
+            title.trim(), // Use title as alt text
+            category?.trim() || 'general'
+        ]);
         
-        // Add to gallery array
-        gallery.push(newItem);
+        // Clean up uploaded file (no longer needed)
+        try {
+            await fs.unlink(req.file.path);
+        } catch (unlinkError) {
+            console.warn('Could not delete temporary file:', unlinkError.message);
+        }
         
-        // Save updated gallery
-        await writeData(dataPath.gallery, gallery);
+        const newImageId = result.insertId;
         
-        console.log('✅ Gallery image uploaded:', req.file.filename, `(${imageType}, ${width}x${height})`);
+        console.log('✅ Gallery image uploaded to database:', title, `(${width}x${height}, ${req.file.size} bytes)`);
         
         res.status(201).json({
             success: true,
-            message: 'Imagine încărcată cu succes!',
-            image: newItem
+            message: 'Imagine încărcată cu succes în baza de date!',
+            image: {
+                id: newImageId,
+                title: title.trim(),
+                description: description?.trim() || '',
+                src: `/api/gallery/image/${newImageId}`,
+                width,
+                height,
+                size: req.file.size,
+                mimeType: req.file.mimetype,
+                category: category?.trim() || 'general'
+            }
         });
         
     } catch (error) {
-        console.error('Error uploading gallery image:', error);
+        console.error('Error uploading gallery image to database:', error);
         
         // Clean up uploaded file if there was an error
         if (req.file) {
@@ -1234,45 +1323,77 @@ app.post('/api/gallery/upload', uploadGallery.single('image'), async (req, res) 
         
         res.status(500).json({ 
             success: false,
-            error: 'Eroare la încărcarea imaginii' 
+            error: 'Eroare la încărcarea imaginii în baza de date' 
         });
     }
 });
 
-// Update gallery item (edit alt text)
+// Update gallery item (edit title/description)
 app.put('/api/gallery/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const { alt } = req.body;
+        const { title, description, category } = req.body;
         
-        if (!alt || alt.trim() === '') {
+        if (!title || title.trim() === '') {
             return res.status(400).json({ 
                 success: false,
-                error: 'Descrierea imaginii este obligatorie' 
+                error: 'Titlul imaginii este obligatoriu' 
             });
         }
         
-        const gallery = await readData(dataPath.gallery);
-        const imageIndex = gallery.findIndex(img => img.id === id);
+        // Check if another image has the same title + description combination
+        const [existing] = await pool.execute(
+            'SELECT id FROM gallery_items WHERE title = ? AND description = ? AND id != ? AND is_active = TRUE',
+            [title.trim(), description?.trim() || '', id]
+        );
         
-        if (imageIndex === -1) {
+        if (existing.length > 0) {
+            return res.status(400).json({ 
+                success: false,
+                error: 'Există deja o imagine cu acest titlu și descriere' 
+            });
+        }
+        
+        // Update the gallery item
+        const [result] = await pool.execute(`
+            UPDATE gallery_items 
+            SET title = ?, description = ?, alt_text = ?, category = ?, updated_at = NOW()
+            WHERE id = ? AND is_active = TRUE
+        `, [
+            title.trim(),
+            description?.trim() || '',
+            title.trim(), // Use title as alt text
+            category?.trim() || 'general',
+            id
+        ]);
+        
+        if (result.affectedRows === 0) {
             return res.status(404).json({ 
                 success: false,
                 error: 'Imaginea nu a fost găsită' 
             });
         }
         
-        // Update alt text
-        gallery[imageIndex].alt = alt.trim();
-        gallery[imageIndex].updatedDate = new Date().toISOString();
-        
-        // Save updated gallery
-        await writeData(dataPath.gallery, gallery);
+        // Get updated image data
+        const [updated] = await pool.execute(
+            'SELECT id, title, description, category, width, height, file_size, mime_type FROM gallery_items WHERE id = ?',
+            [id]
+        );
         
         res.json({
             success: true,
-            message: 'Descrierea imaginii a fost actualizată',
-            image: gallery[imageIndex]
+            message: 'Imaginea a fost actualizată cu succes',
+            image: {
+                id: updated[0].id,
+                title: updated[0].title,
+                description: updated[0].description,
+                category: updated[0].category,
+                src: `/api/gallery/image/${id}`,
+                width: updated[0].width,
+                height: updated[0].height,
+                size: updated[0].file_size,
+                mimeType: updated[0].mime_type
+            }
         });
         
     } catch (error) {
@@ -1284,48 +1405,36 @@ app.put('/api/gallery/:id', async (req, res) => {
     }
 });
 
-// Delete gallery image
+// Delete gallery image from database
 app.delete('/api/gallery/:id', async (req, res) => {
     try {
         const { id } = req.params;
         
-        const gallery = await readData(dataPath.gallery);
-        const imageIndex = gallery.findIndex(img => img.id === id);
+        // Soft delete - mark as inactive instead of hard delete
+        const [result] = await pool.execute(
+            'UPDATE gallery_items SET is_active = FALSE, updated_at = NOW() WHERE id = ? AND is_active = TRUE',
+            [id]
+        );
         
-        if (imageIndex === -1) {
+        if (result.affectedRows === 0) {
             return res.status(404).json({ 
                 success: false,
                 error: 'Imaginea nu a fost găsită' 
             });
         }
         
-        const imageToDelete = gallery[imageIndex];
-        
-        // Delete physical file
-        const imagePath = path.join(__dirname, 'casadenis-project', 'public', imageToDelete.src);
-        try {
-            await fs.unlink(imagePath);
-            console.log('✅ Physical file deleted:', imageToDelete.filename);
-        } catch (unlinkError) {
-            console.warn('Could not delete physical file:', unlinkError.message);
-        }
-        
-        // Remove from gallery array
-        gallery.splice(imageIndex, 1);
-        
-        // Save updated gallery
-        await writeData(dataPath.gallery, gallery);
+        console.log('✅ Gallery image soft deleted from database:', id);
         
         res.json({
             success: true,
-            message: 'Imaginea a fost ștearsă cu succes'
+            message: 'Imaginea a fost ștearsă cu succes din galerie'
         });
         
     } catch (error) {
-        console.error('Error deleting gallery image:', error);
+        console.error('Error deleting gallery image from database:', error);
         res.status(500).json({ 
             success: false,
-            error: 'Eroare la ștergerea imaginii' 
+            error: 'Eroare la ștergerea imaginii din baza de date' 
         });
     }
 });
@@ -1333,31 +1442,64 @@ app.delete('/api/gallery/:id', async (req, res) => {
 // Get gallery preview for homepage (prioritizes tall images)
 app.get('/api/gallery/preview', async (req, res) => {
     try {
-        const gallery = await readData(dataPath.gallery);
+        const [rows] = await pool.execute(`
+            SELECT id, title, description, width, height, alt_text, category, created_at,
+                   CONCAT('/api/gallery/image/', id) as src,
+                   CASE 
+                       WHEN width > 0 AND height > 0 THEN
+                           CASE 
+                               WHEN width / height > 1.3 THEN 'wide'
+                               WHEN width / height < 0.8 THEN 'tall'
+                               ELSE 'square'
+                           END
+                       ELSE 'square'
+                   END as imageType
+            FROM gallery_items 
+            WHERE is_active = TRUE 
+            ORDER BY 
+                CASE 
+                    WHEN width > 0 AND height > 0 AND width / height < 0.8 THEN 0
+                    ELSE 1
+                END,
+                created_at DESC
+            LIMIT 8
+        `);
         
-        // Sort images: tall images first, then by upload date
-        const sortedGallery = gallery.sort((a, b) => {
-            // Prioritize tall images
-            if (a.imageType === 'tall' && b.imageType !== 'tall') return -1;
-            if (b.imageType === 'tall' && a.imageType !== 'tall') return 1;
-            
-            // For same type, sort by upload date (newest first)
-            return new Date(b.uploadDate || 0) - new Date(a.uploadDate || 0);
-        });
+        // Transform to match frontend format
+        const previewImages = rows.map(row => ({
+            id: row.id,
+            src: row.src,
+            alt: row.alt_text || row.title,
+            title: row.title,
+            description: row.description,
+            width: row.width,
+            height: row.height,
+            aspectRatio: row.width && row.height ? row.width / row.height : 1,
+            imageType: row.imageType,
+            category: row.category,
+            uploadDate: row.created_at
+        }));
         
-        // Take first 8 images (prioritizing tall ones)
-        const previewImages = sortedGallery.slice(0, 8);
+        // Get counts
+        const [countRows] = await pool.execute(`
+            SELECT 
+                COUNT(*) as totalCount,
+                SUM(CASE WHEN width > 0 AND height > 0 AND width / height < 0.8 THEN 1 ELSE 0 END) as tallCount,
+                SUM(CASE WHEN width > 0 AND height > 0 AND width / height > 1.3 THEN 1 ELSE 0 END) as wideCount
+            FROM gallery_items 
+            WHERE is_active = TRUE
+        `);
         
         res.json({
             success: true,
             images: previewImages,
-            totalCount: gallery.length,
-            tallCount: gallery.filter(img => img.imageType === 'tall').length,
-            wideCount: gallery.filter(img => img.imageType === 'wide').length
+            totalCount: countRows[0].totalCount,
+            tallCount: countRows[0].tallCount,
+            wideCount: countRows[0].wideCount
         });
         
     } catch (error) {
-        console.error('Error loading gallery preview:', error);
+        console.error('Error loading gallery preview from database:', error);
         res.status(500).json({ 
             success: false,
             error: 'Eroare la încărcarea preview-ului galeriei',
@@ -3247,28 +3389,9 @@ function getDefaultAboutDetailed() {
     };
 }
 
-// Ensure required directories exist
-async function ensureDirectories() {
-    const directories = [
-        path.join(__dirname, 'data'),
-        path.join(__dirname, 'casadenis-project', 'public', 'images'),
-        path.join(__dirname, 'backups')
-    ];
-    
-    for (const dir of directories) {
-        try {
-            await fs.mkdir(dir, { recursive: true });
-            console.log(`📁 Directory ensured: ${dir}`);
-        } catch (error) {
-            console.warn(`⚠️ Could not create directory ${dir}:`, error.message);
-        }
-    }
-}
-
 // Initialize the application
 async function initializeApp() {
     console.log('🚀 Initializing Casa Denis Server...');
-    await ensureDirectories();
     await setupDatabase();
     await setupEmailTransporter();
     console.log('✅ Initialization complete!');
@@ -3280,44 +3403,6 @@ initializeApp().then(() => {
 }).catch(error => {
     console.error('❌ Initialization failed:', error);
     process.exit(1);
-});
-
-// Debug route to check volumes
-app.get('/api/debug/volumes', (req, res) => {
-    const fs = require('fs');
-    const volumeInfo = {
-        timestamp: new Date().toISOString(),
-        volumes: []
-    };
-    
-    const checkPaths = [
-        '/app/casadenis-project/public/images',
-        '/app/data',
-        path.join(__dirname, 'casadenis-project', 'public', 'images'),
-        path.join(__dirname, 'data')
-    ];
-    
-    checkPaths.forEach(checkPath => {
-        try {
-            const stats = fs.statSync(checkPath);
-            const files = fs.readdirSync(checkPath);
-            volumeInfo.volumes.push({
-                path: checkPath,
-                exists: true,
-                isDirectory: stats.isDirectory(),
-                fileCount: files.length,
-                files: files.slice(0, 5) // First 5 files
-            });
-        } catch (error) {
-            volumeInfo.volumes.push({
-                path: checkPath,
-                exists: false,
-                error: error.message
-            });
-        }
-    });
-    
-    res.json(volumeInfo);
 });
 
 // 404 handler

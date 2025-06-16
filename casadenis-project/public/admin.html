@@ -2048,12 +2048,29 @@
                                 <small style="color: #666;">Acceptă: JPG, PNG, WEBP (max 5MB)</small>
                             </div>
                             <div class="form-group">
-                                <label for="gallery-alt">Descriere imagine</label>
-                                <input type="text" id="gallery-alt" name="alt" class="form-control"
-                                    placeholder="Ex: Copii la activități creative" required>
+                                <label for="gallery-title">Titlu imagine *</label>
+                                <input type="text" id="gallery-title" name="title" class="form-control"
+                                    placeholder="Ex: Activități creative" required>
+                                <small style="color: #666;">Titlul este obligatoriu și trebuie să fie unic</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="gallery-description">Descriere imagine</label>
+                                <textarea id="gallery-description" name="description" class="form-control" rows="2"
+                                    placeholder="Ex: Copii desenând și pictând în sala de artă"></textarea>
+                                <small style="color: #666;">Combinația titlu + descriere trebuie să fie unică</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="gallery-category">Categorie</label>
+                                <select id="gallery-category" name="category" class="form-control">
+                                    <option value="general">General</option>
+                                    <option value="activities">Activități</option>
+                                    <option value="spaces">Spații</option>
+                                    <option value="events">Evenimente</option>
+                                    <option value="children">Copii</option>
+                                </select>
                             </div>
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-upload"></i> Încarcă Imagine
+                                <i class="fas fa-upload"></i> Încarcă în Baza de Date
                             </button>
                             <button type="button" class="btn btn-success" onclick="openBulkUpload()">
                                 <i class="fas fa-images"></i> Încarcă Multiple (Aceeași Descriere)
@@ -3549,10 +3566,17 @@
 
                     const formData = new FormData();
                     const imageFile = document.getElementById('gallery-image')?.files[0];
-                    const altText = document.getElementById('gallery-alt')?.value || '';
+                    const title = document.getElementById('gallery-title')?.value?.trim() || '';
+                    const description = document.getElementById('gallery-description')?.value?.trim() || '';
+                    const category = document.getElementById('gallery-category')?.value || 'general';
 
                     if (!imageFile) {
                         showAlert('error', 'Te rog selectează o imagine');
+                        return;
+                    }
+
+                    if (!title) {
+                        showAlert('error', 'Titlul imaginii este obligatoriu');
                         return;
                     }
 
@@ -3570,7 +3594,9 @@
                     }
 
                     formData.append('image', imageFile);
-                    formData.append('alt', altText);
+                    formData.append('title', title);
+                    formData.append('description', description);
+                    formData.append('category', category);
 
                     // Show upload progress
                     showUploadProgress();
@@ -3638,14 +3664,21 @@
                     const item = document.createElement('div');
                     item.className = 'gallery-admin-item';
                     item.innerHTML = `
-            <img src="${image.src}" alt="${image.alt}" 
+            <img src="${image.src}" alt="${image.alt || image.title}" 
                  onerror="this.style.display='none'; this.nextElementSibling.innerHTML='<div style=\\'padding:2rem;text-align:center;color:#666;\\'>❌ Imagine indisponibilă</div>'">
             <div class="gallery-admin-item-info">
-                <div class="gallery-admin-item-title" title="${image.alt || 'Fără descriere'}">
-                    ${image.alt || 'Fără descriere'}
+                <div class="gallery-admin-item-title" title="${image.title || 'Fără titlu'}">
+                    <strong>${image.title || 'Fără titlu'}</strong>
+                    ${image.description ? `<br><small style="color: #666;">${image.description}</small>` : ''}
+                    ${image.category && image.category !== 'general' ? `<br><span style="background: #db2777; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem;">${image.category}</span>` : ''}
+                </div>
+                <div class="gallery-admin-item-meta" style="font-size: 0.75rem; color: #666; margin: 0.5rem 0;">
+                    ${image.width && image.height ? `${image.width}×${image.height}px` : ''} 
+                    ${image.size ? `• ${Math.round(image.size / 1024)}KB` : ''}
+                    ${image.mimeType ? `• ${image.mimeType.split('/')[1].toUpperCase()}` : ''}
                 </div>
                 <div class="gallery-admin-item-actions">
-                    <button class="btn btn-secondary" onclick="editGalleryItem('${image.id}')" title="Editează descrierea">
+                    <button class="btn btn-secondary" onclick="editGalleryItem('${image.id}')" title="Editează imaginea">
                         <i class="fas fa-edit"></i>
                     </button>
                     <button class="btn btn-danger" onclick="deleteGalleryItem('${image.id}')" title="Șterge imaginea">
@@ -6550,6 +6583,137 @@ Continui?`);
                 if (preview) preview.style.background = val;
             }
         });
+
+        // Gallery management functions for database storage
+        async function editGalleryItem(imageId) {
+            try {
+                // Get current image data
+                const response = await fetch('/api/gallery');
+                if (!response.ok) throw new Error('Nu s-au putut încărca datele galeriei');
+                
+                const images = await response.json();
+                const image = images.find(img => img.id == imageId);
+                
+                if (!image) {
+                    showAlert('Imaginea nu a fost găsită', 'error');
+                    return;
+                }
+                
+                // Create edit modal
+                const modal = document.createElement('div');
+                modal.className = 'modal';
+                modal.style.display = 'block';
+                modal.innerHTML = `
+                    <div class="modal-content" style="max-width: 600px;">
+                        <div class="modal-header">
+                            <h3>Editează Imaginea</h3>
+                            <button class="close-btn" onclick="this.closest('.modal').remove()">&times;</button>
+                        </div>
+                        <form id="edit-gallery-form">
+                            <div class="form-group">
+                                <label>Titlu imagine *</label>
+                                <input type="text" id="edit-title" class="form-control" value="${image.title || ''}" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Descriere imagine</label>
+                                <textarea id="edit-description" class="form-control" rows="2">${image.description || ''}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Categorie</label>
+                                <select id="edit-category" class="form-control">
+                                    <option value="general" ${image.category === 'general' ? 'selected' : ''}>General</option>
+                                    <option value="activities" ${image.category === 'activities' ? 'selected' : ''}>Activități</option>
+                                    <option value="spaces" ${image.category === 'spaces' ? 'selected' : ''}>Spații</option>
+                                    <option value="events" ${image.category === 'events' ? 'selected' : ''}>Evenimente</option>
+                                    <option value="children" ${image.category === 'children' ? 'selected' : ''}>Copii</option>
+                                </select>
+                            </div>
+                            <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem;">
+                                <button type="button" class="btn btn-secondary" onclick="this.closest('.modal').remove()">Anulează</button>
+                                <button type="submit" class="btn btn-primary">Salvează Modificările</button>
+                            </div>
+                        </form>
+                    </div>
+                `;
+                
+                document.body.appendChild(modal);
+                
+                // Handle form submission
+                document.getElementById('edit-gallery-form').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const title = document.getElementById('edit-title').value.trim();
+                    const description = document.getElementById('edit-description').value.trim();
+                    const category = document.getElementById('edit-category').value;
+                    
+                    if (!title) {
+                        showAlert('Titlul este obligatoriu', 'error');
+                        return;
+                    }
+                    
+                    try {
+                        const updateResponse = await fetch(`/api/gallery/${imageId}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ title, description, category })
+                        });
+                        
+                        if (updateResponse.ok) {
+                            modal.remove();
+                            loadGalleryItems();
+                            showAlert('Imaginea a fost actualizată cu succes!', 'success');
+                        } else {
+                            const error = await updateResponse.json();
+                            throw new Error(error.error || 'Eroare la actualizare');
+                        }
+                    } catch (err) {
+                        console.error('Error updating gallery item:', err);
+                        showAlert(err.message || 'Eroare la actualizarea imaginii', 'error');
+                    }
+                });
+                
+            } catch (err) {
+                console.error('Error editing gallery item:', err);
+                showAlert('Eroare la editarea imaginii', 'error');
+            }
+        }
+
+        async function deleteGalleryItem(imageId) {
+            if (!confirm('Ești sigur că vrei să ștergi această imagine din galerie? Această acțiune nu poate fi anulată.')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/gallery/${imageId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    loadGalleryItems();
+                    refreshGalleryPreview();
+                    showAlert('Imaginea a fost ștearsă cu succes din galerie!', 'success');
+                } else {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Eroare la ștergere');
+                }
+            } catch (err) {
+                console.error('Error deleting gallery item:', err);
+                showAlert(err.message || 'Eroare la ștergerea imaginii', 'error');
+            }
+        }
+
+        // Refresh gallery preview iframe
+        function refreshGalleryPreview() {
+            const iframe = document.getElementById('gallery-preview-iframe');
+            if (iframe) {
+                iframe.src = iframe.src; // Force reload
+            }
+        }
+
+        // Open gallery in new tab
+        function openGalleryPreview() {
+            window.open('/gallery.html', '_blank');
+        }
     </script>
 </body>
 

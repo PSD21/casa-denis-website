@@ -233,6 +233,9 @@ NODE_ENV=development
         
         // Migrare pentru coloanele noi de înscriere
         await this.migrateEnrollmentFields();
+        
+        // Migrare pentru stocarea imaginilor în DB
+        await this.migrateGalleryImageStorage();
     }
 
     async migrateEnrollmentFields() {
@@ -267,6 +270,48 @@ NODE_ENV=development
             } catch (error) {
                 this.log('warning', `Nu s-a putut adăuga coloana '${columnName}'`, error.message);
             }
+        }
+    }
+
+    async migrateGalleryImageStorage() {
+        this.log('step', 'Verificarea și adăugarea coloanelor pentru imagini în DB...');
+        
+        const imageColumns = [
+            'image_data LONGBLOB NULL',
+            'mime_type VARCHAR(50) NULL',
+            'file_size INT NULL',
+            'width INT NULL',
+            'height INT NULL'
+        ];
+        
+        for (const column of imageColumns) {
+            const columnName = column.split(' ')[0];
+            try {
+                // Verifică dacă coloana există
+                const [rows] = await this.connection.execute(`
+                    SELECT COLUMN_NAME 
+                    FROM INFORMATION_SCHEMA.COLUMNS 
+                    WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'gallery_items' AND COLUMN_NAME = ?
+                `, [this.config.database, columnName]);
+                
+                if (rows.length === 0) {
+                    // Coloana nu există, o adaugă
+                    await this.connection.execute(`ALTER TABLE gallery_items ADD COLUMN ${column}`);
+                    this.log('success', `Coloană '${columnName}' adăugată în tabela gallery_items`);
+                } else {
+                    this.log('check', `Coloană '${columnName}' există deja`);
+                }
+            } catch (error) {
+                this.log('warning', `Nu s-a putut adăuga coloana '${columnName}'`, error.message);
+            }
+        }
+        
+        // Modifică image_path să fie NULL (nu mai e obligatoriu)
+        try {
+            await this.connection.execute(`ALTER TABLE gallery_items MODIFY COLUMN image_path VARCHAR(500) NULL`);
+            this.log('success', 'Coloana image_path modificată să fie opțională');
+        } catch (error) {
+            this.log('warning', 'Nu s-a putut modifica coloana image_path', error.message);
         }
     }
 
@@ -452,7 +497,12 @@ exec(command, (error, stdout, stderr) => {
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 title VARCHAR(200) NOT NULL,
                 description TEXT NULL,
-                image_path VARCHAR(500) NOT NULL,
+                image_data LONGBLOB NULL,
+                image_path VARCHAR(500) NULL,
+                mime_type VARCHAR(50) NULL,
+                file_size INT NULL,
+                width INT NULL,
+                height INT NULL,
                 alt_text VARCHAR(200) NULL,
                 category VARCHAR(50) DEFAULT 'general',
                 order_index INT DEFAULT 0,

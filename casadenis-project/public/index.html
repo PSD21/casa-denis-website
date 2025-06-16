@@ -2285,29 +2285,17 @@
 
         // Funcție pentru a afișa/ascunde câmpurile de înscriere
         function toggleEnrollmentFields() {
-            const messageTypeElement = document.getElementById('message-type');
+            const messageType = document.getElementById('message-type').value;
             const enrollmentFields = document.getElementById('enrollment-fields');
-            const formTitle = document.querySelector('.contact-form h3');
-            
-            if (!messageTypeElement || !enrollmentFields) {
-                console.warn('Form elements not found');
-                return;
-            }
-            
-            const messageType = messageTypeElement.value;
             
             if (messageType === 'enrollment') {
                 enrollmentFields.style.display = 'block';
                 // Update form title
-                if (formTitle) {
-                    formTitle.textContent = 'Înscrie-ți copilul';
-                }
+                document.querySelector('.contact-form h3').textContent = 'Înscrie-ți copilul';
             } else {
                 enrollmentFields.style.display = 'none';
                 // Reset form title
-                if (formTitle) {
-                    formTitle.textContent = 'Trimite-ne un mesaj';
-                }
+                document.querySelector('.contact-form h3').textContent = 'Trimite-ne un mesaj';
             }
         }
 
@@ -2633,23 +2621,23 @@
                 contactForm.addEventListener('submit', async function(e) {
                     e.preventDefault();
                     
-                    // Get form data with null checks
+                    // Get form data
                     const formData = {
-                        name: document.getElementById('contact-name')?.value?.trim() || '',
-                        email: document.getElementById('contact-email-form')?.value?.trim() || '',
-                        phone: document.getElementById('contact-phone-form')?.value?.trim() || '',
-                        message_type: document.getElementById('message-type')?.value || '',
-                        message: document.getElementById('contact-message')?.value?.trim() || ''
+                        name: document.getElementById('contact-name').value.trim(),
+                        email: document.getElementById('contact-email-form').value.trim(),
+                        phone: document.getElementById('contact-phone-form').value.trim(),
+                        message_type: document.getElementById('message-type').value,
+                        message: document.getElementById('contact-message').value.trim()
                     };
                     
                     // Add enrollment specific fields if enrollment is selected
                     if (formData.message_type === 'enrollment') {
-                        formData.child_name = document.getElementById('child-name')?.value?.trim() || '';
-                        formData.child_age = document.getElementById('child-age')?.value || '';
-                        formData.allergies = document.getElementById('allergies')?.value?.trim() || '';
-                        formData.medical_issues = document.getElementById('medical-issues')?.value?.trim() || '';
-                        formData.preferred_activities = document.getElementById('preferred-activities')?.value?.trim() || '';
-                        formData.program_preference = document.getElementById('program-preference')?.value || '';
+                        formData.child_name = document.getElementById('child-name').value.trim();
+                        formData.child_age = document.getElementById('child-age').value;
+                        formData.allergies = document.getElementById('allergies').value.trim();
+                        formData.medical_issues = document.getElementById('medical-issues').value.trim();
+                        formData.preferred_activities = document.getElementById('preferred-activities').value.trim();
+                        formData.program_preference = document.getElementById('program-preference').value;
                     }
                     
                     // Validate required fields
