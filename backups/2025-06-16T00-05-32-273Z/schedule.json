@@ -1,0 +1,42 @@
+[
+  {
+    "time": "07:00 - 08:00",
+    "description": "sosire si acomodarea",
+    "icon": "fas fa-door-open"
+  },
+  {
+    "time": "08:00 - 09:00",
+    "description": "Mic dejun",
+    "icon": "fas fa-bread-slice"
+  },
+  {
+    "time": "09:00 - 12:00",
+    "description": "Asistență la teme",
+    "icon": "fas fa-book-open"
+  },
+  {
+    "time": "12:00 - 13:00",
+    "description": "Prânz",
+    "icon": "fas fa-utensils"
+  },
+  {
+    "time": "13:00 - 15:00",
+    "description": "Activități educative",
+    "icon": "fas fa-book"
+  },
+  {
+    "time": "15:00 - 15:30",
+    "description": "Gustare",
+    "icon": "fas fa-ice-cream"
+  },
+  {
+    "time": "15:30 - 16:00",
+    "description": "Activități creative",
+    "icon": "fas fa-paint-brush"
+  },
+  {
+    "time": "16:00 - 17:00",
+    "description": "Joc liber și plecare",
+    "icon": "fas fa-child"
+  }
+]

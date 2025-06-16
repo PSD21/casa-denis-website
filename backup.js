@@ -4,7 +4,7 @@
 const { exec } = require('child_process');
 const path = require('path');
 require('dotenv').config();
- 
+
 const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
 const backupFile = `backup_casa_denis_${timestamp}.sql`;
 const backupPath = path.join(__dirname, 'backups');
