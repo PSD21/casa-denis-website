@@ -5,14 +5,23 @@ const fs = require('fs').promises;
 // Railway provides these environment variables automatically
 const dbConfig = (() => {
     // First try Railway's MySQL environment variables (MYSQL prefix) - HIGHEST PRIORITY
-    if (process.env.MYSQLHOST && process.env.MYSQLUSER && process.env.MYSQLPASSWORD && process.env.MYSQLDATABASE) {
+    if (process.env.MYSQLHOST && process.env.MYSQLUSER && process.env.MYSQLPASSWORD) {
         console.log('🔧 Using Railway MySQL environment variables');
+        
+        // Clean up variables by removing all whitespace, newlines, and control characters
+        const cleanHost = process.env.MYSQLHOST.replace(/[\r\n\t\s]/g, '').trim();
+        const cleanUser = process.env.MYSQLUSER.replace(/[\r\n\t\s]/g, '').trim();
+        const cleanPassword = process.env.MYSQLPASSWORD.replace(/[\r\n\t]/g, '').trim();
+        const cleanDatabase = process.env.MYSQLDATABASE ? process.env.MYSQLDATABASE.replace(/[\r\n\t\s]/g, '').trim() : 'railway';
+        
         console.log('🔍 Raw MySQL values - Host:', process.env.MYSQLHOST, 'User:', process.env.MYSQLUSER, 'DB:', process.env.MYSQLDATABASE);
+        console.log('🧹 Cleaned MySQL values - Host:', cleanHost, 'User:', cleanUser, 'DB:', cleanDatabase);
+        
         return {
-            host: process.env.MYSQLHOST,
-            user: process.env.MYSQLUSER,
-            password: process.env.MYSQLPASSWORD,
-            database: process.env.MYSQLDATABASE,
+            host: cleanHost,
+            user: cleanUser,
+            password: cleanPassword,
+            database: cleanDatabase,
             port: parseInt(process.env.MYSQLPORT) || 3306,
             charset: 'utf8mb4',
             waitForConnections: true,
