@@ -1811,7 +1811,12 @@
                                 <i class="fas fa-map-marker-alt"></i>
                                 <div class="contact-item-content">
                                     <h3>Adresa</h3>
-                                    <p id="contact-address">Strada Satmarel nr. 402, Satu Mare</p>
+                                    <p id="contact-address">
+                                        <a href="https://maps.app.goo.gl/e4oLP319fJpcmpUd6" target="_blank" rel="noopener noreferrer" style="color: #7c3aed; text-decoration: none; transition: color 0.2s ease;" onmouseover="this.style.color='#db2777'" onmouseout="this.style.color='#7c3aed'">
+                                            Strada Satmarel nr. 402, Satu Mare
+                                            <i class="fas fa-external-link-alt" style="font-size: 0.8rem; margin-left: 0.5rem; opacity: 0.7;"></i>
+                                        </a>
+                                    </p>
                                 </div>
                             </div>
                             
@@ -1946,6 +1951,13 @@
                         <li><i class="far fa-clock"></i> Luni - Vineri: 07:00 - 18:00</li>
                         <li><i class="fas fa-phone"></i> +40 740 490 171, +40 740 096 051</li>
                         <li><i class="fas fa-envelope"></i> casa.denis2025@gmail.com</li>
+                        <li>
+                            <i class="fas fa-map-marker-alt"></i> 
+                            <a href="https://maps.app.goo.gl/e4oLP319fJpcmpUd6" target="_blank" rel="noopener noreferrer" style="color: #9ca3af; text-decoration: none; transition: color 0.2s ease;" onmouseover="this.style.color='white'" onmouseout="this.style.color='#9ca3af'">
+                                Strada Satmarel nr. 402, Satu Mare
+                                <i class="fas fa-external-link-alt" style="font-size: 0.7rem; margin-left: 0.3rem; opacity: 0.7;"></i>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -2213,7 +2225,19 @@
                 const contactResponse = await fetch('/api/contact');
                 if (contactResponse.ok) {
                     const contactData = await contactResponse.json();
-                    if (contactData.address) document.getElementById('contact-address').textContent = contactData.address;
+                    if (contactData.address) {
+                        const addressElement = document.getElementById('contact-address');
+                        if (contactData.address_link) {
+                            addressElement.innerHTML = `
+                                <a href="${contactData.address_link}" target="_blank" rel="noopener noreferrer" style="color: #7c3aed; text-decoration: none; transition: color 0.2s ease;" onmouseover="this.style.color='#db2777'" onmouseout="this.style.color='#7c3aed'">
+                                    ${contactData.address}
+                                    <i class="fas fa-external-link-alt" style="font-size: 0.8rem; margin-left: 0.5rem; opacity: 0.7;"></i>
+                                </a>
+                            `;
+                        } else {
+                            addressElement.textContent = contactData.address;
+                        }
+                    }
                     if (contactData.phone) document.getElementById('contact-phone').textContent = contactData.phone;
                     if (contactData.email) document.getElementById('contact-email').textContent = contactData.email;
                     if (contactData.hours) document.getElementById('contact-hours').textContent = contactData.hours;
@@ -2240,7 +2264,19 @@
                 const response = await fetch('/api/contact');
                 if (response.ok) {
                     const contact = await response.json();
-                    if (contact.address) document.getElementById('contact-address').textContent = contact.address;
+                    if (contact.address) {
+                        const addressElement = document.getElementById('contact-address');
+                        if (contact.address_link) {
+                            addressElement.innerHTML = `
+                                <a href="${contact.address_link}" target="_blank" rel="noopener noreferrer" style="color: #7c3aed; text-decoration: none; transition: color 0.2s ease;" onmouseover="this.style.color='#db2777'" onmouseout="this.style.color='#7c3aed'">
+                                    ${contact.address}
+                                    <i class="fas fa-external-link-alt" style="font-size: 0.8rem; margin-left: 0.5rem; opacity: 0.7;"></i>
+                                </a>
+                            `;
+                        } else {
+                            addressElement.textContent = contact.address;
+                        }
+                    }
                     if (contact.phone) document.getElementById('contact-phone').textContent = contact.phone;
                     if (contact.email) document.getElementById('contact-email').textContent = contact.email;
                     if (contact.hours) document.getElementById('contact-hours').textContent = contact.hours;
