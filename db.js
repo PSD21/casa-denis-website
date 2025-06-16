@@ -5,14 +5,14 @@ const fs = require('fs').promises;
 // Railway provides these environment variables automatically
 const dbConfig = (() => {
     // First try Railway's MySQL environment variables (MYSQL prefix) - HIGHEST PRIORITY
-    if (process.env.MYSQLHOST && process.env.MYSQLUSER && process.env.MYSQLPASSWORD) {
+    if (process.env.MYSQLHOST && process.env.MYSQLUSER && process.env.MYSQLPASSWORD && process.env.MYSQLDATABASE) {
         console.log('🔧 Using Railway MySQL environment variables');
         console.log('🔍 Raw MySQL values - Host:', process.env.MYSQLHOST, 'User:', process.env.MYSQLUSER, 'DB:', process.env.MYSQLDATABASE);
         return {
-            host: process.env.MYSQLHOST.trim(),
-            user: process.env.MYSQLUSER.trim(),
-            password: process.env.MYSQLPASSWORD.trim(),
-            database: (process.env.MYSQLDATABASE || 'railway').trim(),
+            host: process.env.MYSQLHOST,
+            user: process.env.MYSQLUSER,
+            password: process.env.MYSQLPASSWORD,
+            database: process.env.MYSQLDATABASE,
             port: parseInt(process.env.MYSQLPORT) || 3306,
             charset: 'utf8mb4',
             waitForConnections: true,
