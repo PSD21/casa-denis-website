@@ -4845,7 +4845,12 @@ Continui?`);
                 filteredMessages = filteredMessages.filter(msg => 
                     msg.name.toLowerCase().includes(searchFilter) ||
                     msg.email.toLowerCase().includes(searchFilter) ||
-                    msg.message.toLowerCase().includes(searchFilter)
+                    msg.message.toLowerCase().includes(searchFilter) ||
+                    (msg.child_name && msg.child_name.toLowerCase().includes(searchFilter)) ||
+                    (msg.allergies && msg.allergies.toLowerCase().includes(searchFilter)) ||
+                    (msg.medical_issues && msg.medical_issues.toLowerCase().includes(searchFilter)) ||
+                    (msg.preferred_activities && msg.preferred_activities.toLowerCase().includes(searchFilter)) ||
+                    (msg.program_preference && msg.program_preference.toLowerCase().includes(searchFilter))
                 );
             }
 
@@ -4925,6 +4930,52 @@ Continui?`);
                     <div class="message-content">
                         ${message.message}
                     </div>
+
+                    ${message.message_type === 'enrollment' && (message.child_name || message.child_age) ? `
+                        <div class="enrollment-details" style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px; padding: 1rem; margin: 1rem 0;">
+                            <h4 style="color: #0369a1; margin: 0 0 0.75rem 0; font-size: 1rem;">
+                                <i class="fas fa-child"></i> Detalii Înscriere Copil
+                            </h4>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem;">
+                                ${message.child_name ? `
+                                    <div>
+                                        <strong style="color: #0369a1;">Numele copilului:</strong><br>
+                                        <span style="color: #1e40af;">${message.child_name}</span>
+                                    </div>
+                                ` : ''}
+                                ${message.child_age ? `
+                                    <div>
+                                        <strong style="color: #0369a1;">Vârsta:</strong><br>
+                                        <span style="color: #1e40af;">${message.child_age} ani</span>
+                                    </div>
+                                ` : ''}
+                                ${message.program_preference ? `
+                                    <div>
+                                        <strong style="color: #0369a1;">Program preferat:</strong><br>
+                                        <span style="color: #1e40af;">${message.program_preference}</span>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            ${message.allergies ? `
+                                <div style="margin-top: 0.75rem;">
+                                    <strong style="color: #0369a1;">Alergii/Intoleranțe:</strong><br>
+                                    <span style="color: #1e40af;">${message.allergies}</span>
+                                </div>
+                            ` : ''}
+                            ${message.medical_issues ? `
+                                <div style="margin-top: 0.75rem;">
+                                    <strong style="color: #0369a1;">Probleme medicale:</strong><br>
+                                    <span style="color: #1e40af;">${message.medical_issues}</span>
+                                </div>
+                            ` : ''}
+                            ${message.preferred_activities ? `
+                                <div style="margin-top: 0.75rem;">
+                                    <strong style="color: #0369a1;">Activități preferate:</strong><br>
+                                    <span style="color: #1e40af;">${message.preferred_activities}</span>
+                                </div>
+                            ` : ''}
+                        </div>
+                    ` : ''}
 
                     <div class="message-actions">
                         ${isUnread ? `
