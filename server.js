@@ -10,7 +10,7 @@ const bcrypt = require('bcrypt');
 require('dotenv').config();
 
 const app = express();
-const port = process.env.PORT || 3002;
+const port = process.env.PORT || 8080;
 
 // Middleware 
 app.use(cors());
@@ -2206,7 +2206,7 @@ app.post('/api/contact/submit', async (req, res) => {
                             </div>
                             
                             <div style="text-align: center; margin-top: 30px;">
-                                <a href="http://localhost:3002/admin.html#messages" 
+                                <a href="http://localhost:${port}/admin.html#messages" 
                                    style="background: #7c3aed; color: white; padding: 12px 24px; text-decoration: none; 
                                           border-radius: 6px; display: inline-block; font-weight: bold;">
                                     Vezi în Admin Panel
@@ -2467,7 +2467,7 @@ app.listen(port, () => {
         console.error(`❌ Port ${port} is already in use!`);
         console.log(`💡 Solutions:`);
         console.log(`   1. Stop other processes: taskkill /F /IM node.exe`);
-        console.log(`   2. Use different port: PORT=3003 node server.js`);
+        console.log(`   2. Use different port: PORT=8081 node server.js`);
         console.log(`   3. Check running processes: netstat -ano | findstr :${port}`);
         process.exit(1);
     } else {
