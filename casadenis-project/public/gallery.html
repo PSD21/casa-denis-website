@@ -524,6 +524,16 @@
                 gap: 1rem;
             }
             
+            /* Disable animations on mobile for better performance */
+            .gallery-item {
+                transition: none !important;
+                animation: none !important;
+            }
+            
+            .gallery-item:hover {
+                transform: none !important;
+            }
+            
             .search-input {
                 width: 200px;
             }
@@ -551,6 +561,18 @@
         @media (max-width: 480px) {
             .gallery-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            /* Disable all animations and transitions on mobile */
+            .gallery-item {
+                transition: none !important;
+                animation: none !important;
+                transform: none !important;
+            }
+            
+            .gallery-item:hover {
+                transform: none !important;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
             }
             
             .gallery-item.list-view {
