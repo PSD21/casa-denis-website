@@ -998,97 +998,111 @@
             }
         }
         
-        /* Responsive pentru Pricing/Tarife Section */
+        /* MOBILE RESPONSIVE - RENTAL SECTION FIX */
         @media (max-width: 768px) {
-            /* Make all grid sections stack vertically on mobile */
-            .rental-features [style*="grid-template-columns: repeat(3, 1fr)"] {
-                grid-template-columns: 1fr !important;
-                gap: 1.5rem !important;
-            }
-            
-            /* Pricing cards - make them full width and more prominent */
-            .pricing-card {
-                padding: 2rem 1.5rem !important;
-                margin: 0 !important;
-                border-radius: 16px !important;
-                text-align: center !important;
-                box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
-                transform: scale(1.02) !important;
-                transition: all 0.3s ease !important;
-            }
-            
-            .pricing-cards-container {
-                grid-template-columns: 1fr !important;
-                gap: 1.5rem !important;
-            }
-            
-            /* Pricing card titles */
-            .rental-features [style*="color: #a78bfa"] {
-                font-size: 1.2rem !important;
-                margin-bottom: 1rem !important;
-                justify-content: center !important;
-            }
-            
-            /* Pricing amounts */
-            .rental-features [style*="font-size: 1.2rem; font-weight: 600"] {
-                font-size: 2rem !important;
-                font-weight: 800 !important;
-                text-shadow: 0 2px 4px rgba(0,0,0,0.3) !important;
-            }
-            
-            /* Adjust the final three sections to stack on mobile */
-            .rental-features [style*="flex-wrap: nowrap"] {
-                flex-direction: column !important;
-                align-items: center !important;
-                gap: 1.5rem !important;
+            /* Force rental features to be single column */
+            .rental-features {
+                display: block !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 1rem auto !important;
                 padding: 0 1rem !important;
             }
             
-            .rental-features [style*="flex: 0 0 280px"] {
-                flex: none !important;
+            /* Force all child divs to be full width and stack */
+            .rental-features > div {
+                display: block !important;
                 width: 100% !important;
-                min-width: auto !important;
                 max-width: 100% !important;
+                margin: 1rem 0 !important;
+                grid-column: unset !important;
+                flex: none !important;
+                min-width: auto !important;
             }
             
-            /* Main CTA section */
-            .rental-features [style*="background: linear-gradient(135deg, #ec4899, #8b5cf6)"] {
-                padding: 1.5rem !important;
-                margin-bottom: 1.5rem !important;
+            /* Pricing cards container - force single column */
+            .pricing-cards-container {
+                display: block !important;
+                grid-template-columns: none !important;
+                width: 100% !important;
             }
             
-            /* Pricing title */
-            .rental-features [style*="font-size: 1.5rem"] {
+            /* Individual pricing cards - force full width */
+            .pricing-card {
+                display: block !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 1rem 0 !important;
+                padding: 2rem 1rem !important;
+                text-align: center !important;
+                box-sizing: border-box !important;
+            }
+            
+            /* Pricing card content */
+            .pricing-card h5 {
                 font-size: 1.3rem !important;
-                margin: 1.5rem 0 1rem 0 !important;
+                justify-content: center !important;
+                text-align: center !important;
+                margin-bottom: 1rem !important;
+            }
+            
+            .pricing-card p {
+                font-size: 2.5rem !important;
+                font-weight: 800 !important;
+                text-align: center !important;
+                margin: 0 !important;
+            }
+            
+            /* Bottom info sections - force stacking */
+            .rental-features div[style*="flex-wrap: nowrap"] {
+                display: block !important;
+                flex-direction: column !important;
+                flex-wrap: wrap !important;
+                overflow-x: visible !important;
+            }
+            
+            .rental-features div[style*="flex: 0 0 280px"] {
+                display: block !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                flex: none !important;
+                min-width: auto !important;
+                margin: 1rem 0 !important;
             }
         }
         
         @media (max-width: 480px) {
-            /* Extra small screens - even more compact */
-            .rental-features [style*="padding: 2rem 1.5rem"] {
-                padding: 1.5rem 1rem !important;
+            /* Extra small screens adjustments */
+            .pricing-card {
+                padding: 1.5rem 0.75rem !important;
+                margin: 0.75rem 0 !important;
             }
             
-            .rental-features [style*="font-size: 1.8rem"] {
-                font-size: 1.4rem !important;
+            .pricing-card h5 {
+                font-size: 1.1rem !important;
             }
             
-            .rental-features [style*="font-size: 1.2rem"] {
-                font-size: 1rem !important;
+            .pricing-card p {
+                font-size: 2rem !important;
             }
             
-            .rental-features [style*="font-size: 2rem"] {
-                font-size: 1.8rem !important;
-            }
-            
-            /* Make info cards more compact */
-            .rental-features [style*="padding: 1rem"] {
+            .rental-features > div {
+                margin: 0.75rem 0 !important;
                 padding: 0.875rem !important;
             }
+        }
+        
+        /* Additional container fixes */
+        @media (max-width: 768px) {
+            #team .container {
+                padding: 0 1rem !important;
+                overflow-x: hidden !important;
+            }
             
-            .rental-features [style*="border-radius: 12px"] {
-                border-radius: 10px !important;
+            .rental-cta {
+                width: 100% !important;
+                max-width: 100% !important;
+                overflow-x: hidden !important;
             }
         }
 
