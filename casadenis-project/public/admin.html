@@ -4361,13 +4361,13 @@ Descriere: "${itemToDelete.alt || 'Fără descriere'}"
                 }
             };
 
-            // Funcție pentru cleanup automat (bonus)
+            // Funcție pentru cleanup galerie (pentru baza de date)
             window.cleanupGallery = async () => {
                 const confirmCleanup = confirm(`🧹 Cleanup Galerie
     
 Această operație va:
-• Verifica toate imaginile din galerie
-• Șterge înregistrările pentru imaginile care nu mai există fizic
+• Reîmprospăta lista de imagini din baza de date
+• Verifica conexiunea la galerie
 • Poate dura câteva secunde
 
 Continui?`);
@@ -4375,54 +4375,21 @@ Continui?`);
                 if (!confirmCleanup) return;
 
                 try {
-                    showAlert('info', 'Se verifică imaginile... Te rog așteaptă...');
+                    showAlert('info', 'Se reîmprospătează galeria... Te rog așteaptă...');
 
-                    const response = await fetch('/api/gallery');
-                    if (!response.ok) throw new Error('Nu pot încărca galeria');
-
-                    const gallery = await response.json();
-                    const brokenImages = [];
-
-                    // Testează fiecare imagine
-                    for (const image of gallery) {
-                        try {
-                            const imgResponse = await fetch(image.src, { method: 'HEAD' });
-                            if (!imgResponse.ok) {
-                                brokenImages.push(image.id);
-                                console.log('Broken image found:', image.src);
-                            }
-                        } catch {
-                            brokenImages.push(image.id);
-                            console.log('Broken image found:', image.src);
-                        }
+                    // Reîncarcă galeria din baza de date
+                    await loadGalleryItems();
+                    
+                    // Reîmprospătează preview-ul
+                    if (typeof refreshGalleryPreview === 'function') {
+                        refreshGalleryPreview();
                     }
 
-                    if (brokenImages.length === 0) {
-                        showAlert('✅ Nu au fost găsite imagini deteriorate! Galeria este curată.', 'success');
-                        return;
-                    }
-
-                    // Șterge imaginile deteriorate
-                    const cleanupResponse = await fetch('/api/gallery/bulk', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            action: 'delete',
-                            imageIds: brokenImages
-                        })
-                    });
-
-                    if (cleanupResponse.ok) {
-                        const result = await cleanupResponse.json();
-                        loadGalleryItems(); // Reload gallery
-                        refreshGalleryPreview(); // Refresh preview
-                        showAlert(`🧹 ${result.deletedCount} imagini deteriorate au fost șterse!`, 'success');
-                    } else {
-                        throw new Error('Eroare la cleanup');
-                    }
+                    showAlert('success', '✅ Galeria a fost reîmprospătată cu succes!');
+                    
                 } catch (err) {
                     console.error('Cleanup error:', err);
-                    showAlert('error', 'Eroare la cleanup-ul galeriei: ' + err.message);
+                    showAlert('error', 'Eroare la reîmprospătarea galeriei: ' + err.message);
                 }
             };
 
