@@ -1105,6 +1105,65 @@
                 overflow-x: hidden !important;
             }
         }
+        
+        /* MOBILE ANIMATION OPTIMIZATIONS */
+        @media (max-width: 768px) {
+            /* Disable complex animations on mobile for better performance */
+            *, *::before, *::after {
+                animation-duration: 0.3s !important;
+                animation-delay: 0s !important;
+                transition-duration: 0.2s !important;
+            }
+            
+            /* Disable hover effects on mobile (touch devices) */
+            .program-card:hover,
+            .team-card:hover,
+            .testimonial-card:hover,
+            .pricing-card:hover,
+            .gallery-item:hover {
+                transform: none !important;
+                box-shadow: inherit !important;
+            }
+            
+            /* Simplify complex animations */
+            .program-card:hover .program-icon,
+            .program-card:hover h3,
+            .program-card:hover p {
+                transform: none !important;
+                animation: none !important;
+            }
+            
+            /* Remove wiggle and bounce animations on mobile */
+            .program-card:hover .program-icon i {
+                animation: none !important;
+            }
+            
+            /* Disable gradient hover effects */
+            .program-card::before {
+                opacity: 0 !important;
+            }
+            
+            /* Simplify button hover effects */
+            .btn-lg:hover,
+            .btn:hover {
+                transform: none !important;
+                box-shadow: inherit !important;
+            }
+            
+            .btn-lg::before {
+                display: none !important;
+            }
+        }
+        
+        /* Respect user's motion preferences */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
 
         /* Program card hover effects */
         .program-card {
