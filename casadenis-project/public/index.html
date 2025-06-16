@@ -879,8 +879,57 @@
             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
 
-        /* Responsive Design pentru Rental */
+        /* Responsive Design pentru Contact și Rental */
         @media (max-width: 768px) {
+            /* Contact Section Mobile */
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                margin-top: 2rem;
+            }
+            
+            .contact-info {
+                padding: 1.5rem;
+                order: 2; /* Move contact info below form on mobile */
+            }
+            
+            .contact-form {
+                padding: 1.5rem;
+                order: 1; /* Move form above contact info on mobile */
+            }
+            
+            .contact-details {
+                gap: 1.5rem;
+            }
+            
+            .contact-item {
+                gap: 0.75rem;
+            }
+            
+            .contact-item i {
+                font-size: 1.25rem;
+                width: 1.5rem;
+            }
+            
+            .contact-item-content h3 {
+                font-size: 1rem;
+            }
+            
+            .contact-item-content p {
+                font-size: 0.9rem;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+            
+            .contact-form h3 {
+                font-size: 1.3rem;
+                text-align: center;
+            }
+            
+            /* Rental Section Mobile */
             .rental-cta {
                 padding: 1.5rem;
                 margin-top: 2rem;
@@ -889,11 +938,14 @@
             .rental-buttons {
                 flex-direction: column;
                 align-items: center;
+                gap: 1rem;
             }
             
             .rental-buttons .btn {
                 width: 100%;
                 max-width: 300px;
+                padding: 1rem;
+                font-size: 1rem;
             }
             
             .rental-features {
@@ -903,6 +955,88 @@
             
             .team-grid {
                 grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .team-card {
+                margin: 0 auto;
+                max-width: 400px;
+            }
+            
+            .team-image {
+                height: 200px;
+            }
+        }
+        
+        /* Extra small screens */
+        @media (max-width: 480px) {
+            .contact-info, .contact-form {
+                padding: 1rem;
+            }
+            
+            .contact-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+            
+            .contact-item i {
+                align-self: flex-start;
+            }
+            
+            .rental-cta {
+                padding: 1rem;
+            }
+            
+            .rental-buttons .btn {
+                font-size: 0.9rem;
+                padding: 0.875rem;
+            }
+            
+            .team-card {
+                max-width: 100%;
+            }
+        }
+        
+        /* Responsive pentru Pricing/Tarife Section */
+        @media (max-width: 768px) {
+            /* Make pricing cards stack vertically on mobile */
+            .rental-features [style*="grid-template-columns: repeat(3, 1fr)"] {
+                grid-template-columns: 1fr !important;
+                gap: 1rem !important;
+            }
+            
+            /* Adjust the final three sections to stack on mobile */
+            .rental-features [style*="flex-wrap: nowrap"] {
+                flex-direction: column !important;
+                align-items: center !important;
+                gap: 1rem !important;
+            }
+            
+            .rental-features [style*="flex: 0 0 280px"] {
+                flex: none !important;
+                width: 100% !important;
+                min-width: auto !important;
+                max-width: 400px !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            /* Further adjustments for very small screens */
+            .rental-features [style*="padding: 1.5rem"] {
+                padding: 1rem !important;
+            }
+            
+            .rental-features [style*="font-size: 1.8rem"] {
+                font-size: 1.5rem !important;
+            }
+            
+            .rental-features [style*="font-size: 1.1rem"] {
+                font-size: 1rem !important;
+            }
+            
+            .rental-features [style*="font-size: 1.2rem"] {
+                font-size: 1.1rem !important;
             }
         }
 
