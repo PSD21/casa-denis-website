@@ -10,5 +10,15 @@
     "healthcheckTimeout": 300,
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10
-  }
+  },
+  "volumes": [
+    {
+      "name": "casa-denis-images",
+      "mountPath": "/app/casadenis-project/public/images"
+    },
+    {
+      "name": "casa-denis-data",
+      "mountPath": "/app/data"
+    }
+  ]
 } 

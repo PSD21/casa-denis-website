@@ -3247,9 +3247,28 @@ function getDefaultAboutDetailed() {
     };
 }
 
+// Ensure required directories exist
+async function ensureDirectories() {
+    const directories = [
+        path.join(__dirname, 'data'),
+        path.join(__dirname, 'casadenis-project', 'public', 'images'),
+        path.join(__dirname, 'backups')
+    ];
+    
+    for (const dir of directories) {
+        try {
+            await fs.mkdir(dir, { recursive: true });
+            console.log(`📁 Directory ensured: ${dir}`);
+        } catch (error) {
+            console.warn(`⚠️ Could not create directory ${dir}:`, error.message);
+        }
+    }
+}
+
 // Initialize the application
 async function initializeApp() {
     console.log('🚀 Initializing Casa Denis Server...');
+    await ensureDirectories();
     await setupDatabase();
     await setupEmailTransporter();
     console.log('✅ Initialization complete!');
