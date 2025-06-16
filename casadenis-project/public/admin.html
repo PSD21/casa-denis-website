@@ -4476,22 +4476,7 @@ Continui?`);
             }
         };
 
-        window.deleteGalleryItem = async function (id) {
-            if (confirm('Sigur dorești să ștergi această imagine din galerie?')) {
-                try {
-                    const response = await fetch(`/api/gallery/${id}`, { method: 'DELETE' });
-                    if (response.ok) {
-                        alert('Imagine ștearsă cu succes!');
-                        if (typeof loadGalleryItems === 'function') loadGalleryItems();
-                        if (typeof refreshGalleryPreview === 'function') refreshGalleryPreview();
-                    } else {
-                        alert('Eroare la ștergere imagine!');
-                    }
-                } catch (err) {
-                    alert('Eroare la ștergere imagine!');
-                }
-            }
-        };
+        // deleteGalleryItem function moved to end of file to avoid duplicates
 
         let currentIconIndex = null;
         const iconCategories = {
@@ -4726,13 +4711,7 @@ Continui?`);
             window.open('gallery.html', '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
         }
 
-        function refreshGalleryPreview() {
-            const iframe = document.getElementById('gallery-preview-iframe');
-            if (iframe) {
-                iframe.src = iframe.src; // Reload iframe
-            }
-            console.log('Gallery preview refreshed');
-        }
+        // refreshGalleryPreview function moved to end of file to avoid duplicates
 
         // Global variables for messages
         let allMessages = [];

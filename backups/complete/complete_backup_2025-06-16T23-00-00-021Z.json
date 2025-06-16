@@ -1,0 +1,114 @@
+{
+  "timestamp": "2025-06-16T23:00:00.025Z",
+  "version": "1.0",
+  "data": {
+    "gallery": [],
+    "spaces": [
+      {
+        "id": "1749594115992",
+        "name": "Spațiu pentru evenimente",
+        "role": "spațiu versatil, cu design rafinat, ideal pentru evenimente personalizate",
+        "description": "Vă invităm să descoperiți un spațiu elegant și versatil, ideal pentru organizarea evenimentelor dumneavoastră într-un cadru confortabil și rafinat.",
+        "color": "#c084fc",
+        "image": "/images/IMG_4453_large_1200x900.jpg"
+      },
+      {
+        "id": "1749594766587",
+        "name": "Universul Micilor Creatori ",
+        "role": "Un colț de joacă, artă și voie bună pentru cei mici – perfect pentru organizatori care doresc să aducă zâmbete copiilor.",
+        "description": "Închiriem un spațiu interior ideal pentru activități dedicate copiilor – perfect pentru joacă, ateliere creative, desen, pictură sau evenimente educative. Un loc sigur, primitor și plin de posibilități pentru a da viață ideilor tale!",
+        "color": "#facc15",
+        "image": "/images/IMG_4469_large_1200x900.jpg"
+      },
+      {
+        "id": "1749595048686",
+        "name": "Curtea cu Minuni",
+        "role": "Spațiu de joacă exterior dedicat divertismentului activ și sigur al copiilor, ideal pentru joacă în aer liber și socializare.",
+        "description": "Descoperă un loc special creat pentru bucuria copiilor – un spațiu de joacă exterior modern, sigur și plin de distracție! Cu tobogane colorate, balansoare, mașinuțe electrice, porți de fotbal, trambulină și multe alte jocuri captivante, acest loc este perfect pentru joacă activă, mișcare și aventuri în aer liber.",
+        "color": "#60a5fa",
+        "image": "/images/IMG_4479_large_1200x900.jpg"
+      }
+    ],
+    "testimonials": [
+      {
+        "id": "58f41bed-d700-4353-9650-a26d65f0a010",
+        "name": "Dragomir  Antonio",
+        "role": "tata",
+        "text": "„Nu sunt genul care scrie recenzii, dar simt că trebuie să spun ceva: de când fata mea merge la Casa Denis, parcă s-a transformat. E mai sigură pe ea, se exprimă mai ușor și chiar profesorii au observat schimbări. E genul ăla de loc unde copilul nu doar că e supravegheat, ci chiar e ascultat și încurajat. Asta face toți banii.”\n\n",
+        "initials": "DA",
+        "color": "bg-purple-100"
+      },
+      {
+        "id": "97ca4be8-5dd8-41ad-8c2a-bbe931a93c06",
+        "name": "Cristina Dumitru",
+        "role": "Mamă",
+        "text": "„Când am căutat un loc pentru copilul meu, voiam ceva mai mult decât un simplu afterschool. La Casa Denis am găsit oameni calzi, un program flexibil și activități care chiar îl atrag. Îmi place că nu se plictisește niciodată și vine mereu acasă cu un zâmbet larg. A contat enorm și pentru echilibrul nostru de familie. Îi recomand din suflet.”",
+        "initials": "CD",
+        "color": "bg-orange-100"
+      },
+      {
+        "id": "b21652b2-7ca8-4749-9497-fc974014ee2d",
+        "name": "Ana Popa",
+        "role": "Mamă a doi copii",
+        "text": "„Sincer, Casa Denis a fost exact ce aveam nevoie. Copiii mei pleacă dimineața cu zâmbetul pe buze și se întorc plini de povești. Le plac activitățile, adoră personalul, iar eu... eu mă simt liniștită, știind că sunt pe mâini bune. Nici nu pot să vă spun ce liniște îți aduce asta, ca părinte.”\n\n",
+        "initials": "AP",
+        "color": "bg-blue-100"
+      }
+    ],
+    "programs": [
+      {
+        "id": "94f5e2b5-03c3-473f-a8c0-2e9331bd0d0f",
+        "title": "Asitenta teme ",
+        "icon": "fas fa-book-open",
+        "description": "Oferim sprijin pentru teme și proiecte școlare, asigurându-ne că fiecare copil înțelege și își completează sarcinile.",
+        "color": "#db2777"
+      },
+      {
+        "id": "3bff642f-5730-4f7a-9177-b8c35217f9be",
+        "title": "Arte și meșteșuguri",
+        "icon": "fas fa-palette",
+        "description": "Activități creative care stimulează imaginația și dezvoltă abilitățile motorii fine ale copiilor.",
+        "color": "#7c3aed"
+      },
+      {
+        "id": "d4884ce4-beed-42cf-a3cb-df7fb226a007",
+        "title": "Muzică și dans",
+        "icon": "fas fa-music",
+        "description": "Lecții de muzică și dans care încurajează exprimarea de sine și dezvoltarea talentelor artistice.",
+        "color": "#d97706"
+      },
+      {
+        "id": "7557c9dd-ef81-4b19-8bff-3d164e399cfb",
+        "title": "Jocuri educative",
+        "icon": "fas fa-puzzle-piece",
+        "description": "Jocuri interactive care dezvoltă gândirea logică, memoria și abilitățile de rezolvare a problemelor.",
+        "color": "#16a34a"
+      },
+      {
+        "id": "b40056f2-659f-48a7-ad0f-e417c97c3a18",
+        "title": "Activități sociale",
+        "icon": "fas fa-users",
+        "description": "Activități de grup care dezvoltă abilitățile sociale și emoționale ale copiilor.",
+        "color": "#2563eb"
+      },
+      {
+        "id": "dd757446-e297-4735-bc18-a1bb4ced0535",
+        "title": "Excursii și evenimente",
+        "icon": "fas fa-users",
+        "description": "Excursii educative și evenimente speciale organizate periodic pentru a îmbogăți experiența copiilor.",
+        "color": "#ea580c"
+      }
+    ],
+    "hero": {
+      "title": "Un loc unde copiii înfloresc.",
+      "subtitle": "Programul nostru after school oferă un mediu sigur, educativ și distractiv pentru copilul tău după orele de școală."
+    },
+    "about": {
+      "title": "Despre Casa Denis",
+      "description": "Casa Denis este un program after school dedicat dezvoltării armonioase a copiilor. Oferim un mediu sigur și stimulant unde copiii pot învăța, se pot juca și pot crește împreună.",
+      "mission": "Misiunea noastră este să sprijinim dezvoltarea academică, socială și emoțională a fiecărui copil, oferind un program echilibrat de activități educative și recreative.",
+      "image": "/images/copii la after school.png"
+    },
+    "contact": {}
+  }
+}
