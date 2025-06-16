@@ -230,6 +230,44 @@ NODE_ENV=development
             this.log('error', 'Eroare la crearea tabelelor', error.message);
             throw error;
         }
+        
+        // Migrare pentru coloanele noi de înscriere
+        await this.migrateEnrollmentFields();
+    }
+
+    async migrateEnrollmentFields() {
+        this.log('step', 'Verificarea și adăugarea coloanelor de înscriere...');
+        
+        const enrollmentColumns = [
+            'child_name VARCHAR(100) NULL',
+            'child_age INT NULL', 
+            'allergies TEXT NULL',
+            'medical_issues TEXT NULL',
+            'preferred_activities TEXT NULL',
+            'program_preference VARCHAR(100) NULL'
+        ];
+        
+        for (const column of enrollmentColumns) {
+            const columnName = column.split(' ')[0];
+            try {
+                // Verifică dacă coloana există
+                const [rows] = await this.connection.execute(`
+                    SELECT COLUMN_NAME 
+                    FROM INFORMATION_SCHEMA.COLUMNS 
+                    WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'messages' AND COLUMN_NAME = ?
+                `, [this.config.database, columnName]);
+                
+                if (rows.length === 0) {
+                    // Coloana nu există, o adaugă
+                    await this.connection.execute(`ALTER TABLE messages ADD COLUMN ${column}`);
+                    this.log('success', `Coloană '${columnName}' adăugată în tabela messages`);
+                } else {
+                    this.log('check', `Coloană '${columnName}' există deja`);
+                }
+            } catch (error) {
+                this.log('warning', `Nu s-a putut adăuga coloana '${columnName}'`, error.message);
+            }
+        }
     }
 
     async runMigration() {
@@ -359,6 +397,12 @@ exec(command, (error, stdout, stderr) => {
                 message TEXT NOT NULL,
                 message_type ENUM('contact', 'enrollment', 'rental_inquiry') DEFAULT 'contact',
                 status ENUM('new', 'read', 'replied', 'archived') DEFAULT 'new',
+                child_name VARCHAR(100) NULL,
+                child_age INT NULL,
+                allergies TEXT NULL,
+                medical_issues TEXT NULL,
+                preferred_activities TEXT NULL,
+                program_preference VARCHAR(100) NULL,
                 ip_address VARCHAR(45) NULL,
                 user_agent TEXT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
