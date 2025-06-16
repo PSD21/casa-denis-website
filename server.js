@@ -2123,7 +2123,11 @@ app.use((error, req, res, next) => {
 // Create new contact message
 app.post('/api/contact/submit', async (req, res) => {
     try {
-        const { name, email, phone, message_type, message } = req.body;
+        const { 
+            name, email, phone, message_type, message,
+            child_name, child_age, allergies, medical_issues, 
+            preferred_activities 
+        } = req.body;
         
         console.log('📝 Received contact form submission:', { name, email, message_type });
         
@@ -2137,14 +2141,19 @@ app.post('/api/contact/submit', async (req, res) => {
 
         // Save to MySQL database
         const [result] = await pool.execute(
-            `INSERT INTO messages (name, email, phone, message, message_type, status, ip_address, user_agent, created_at) 
-             VALUES (?, ?, ?, ?, ?, 'new', ?, ?, NOW())`,
+            `INSERT INTO messages (name, email, phone, message, message_type, status, child_name, child_age, allergies, medical_issues, preferred_activities, ip_address, user_agent, created_at) 
+             VALUES (?, ?, ?, ?, ?, 'new', ?, ?, ?, ?, ?, ?, ?, NOW())`,
             [
                 name.trim(),
                 email.trim(),
                 phone ? phone.trim() : null,
                 message.trim(),
                 message_type || 'contact',
+                child_name ? child_name.trim() : null,
+                child_age ? parseInt(child_age) : null,
+                allergies ? allergies.trim() : null,
+                medical_issues ? medical_issues.trim() : null,
+                preferred_activities ? preferred_activities.trim() : null,
                 req.ip,
                 req.get('User-Agent')
             ]
@@ -2161,6 +2170,13 @@ app.post('/api/contact/submit', async (req, res) => {
                     'enrollment': 'Înscriere copil',
                     'rental_inquiry': 'Închiriere spațiu'
                 };
+                
+                // Create enrollment data object for email
+                const enrollmentData = {
+                    name, email, phone, message_type, message,
+                    child_name, child_age, allergies, medical_issues,
+                    preferred_activities
+                };
 
                 const emailHTML = `
                     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #f8fafc;">
@@ -2175,6 +2191,12 @@ app.post('/api/contact/submit', async (req, res) => {
                                 <p style="margin: 5px 0;"><strong>Email:</strong> ${email}</p>
                                 ${phone ? `<p style="margin: 5px 0;"><strong>Telefon:</strong> ${phone}</p>` : ''}
                                 <p style="margin: 5px 0;"><strong>Tipul mesajului:</strong> ${messageTypeMap[message_type] || message_type}</p>
+                                ${child_name ? `<p style="margin: 5px 0;"><strong>👶 Numele copilului:</strong> ${child_name}</p>` : ''}
+                                ${child_age ? `<p style="margin: 5px 0;"><strong>🎂 Vârsta copilului:</strong> ${child_age} ani</p>` : ''}
+                                ${allergies ? `<p style="margin: 5px 0;"><strong>🚫 Alergii:</strong> ${allergies}</p>` : ''}
+                                ${medical_issues ? `<p style="margin: 5px 0;"><strong>🏥 Probleme medicale:</strong> ${medical_issues}</p>` : ''}
+                                ${preferred_activities ? `<p style="margin: 5px 0;"><strong>🎨 Activități preferate:</strong> ${preferred_activities}</p>` : ''}
+
                                 <p style="margin: 5px 0;"><strong>ID mesaj:</strong> #${messageId}</p>
                             </div>
                             
