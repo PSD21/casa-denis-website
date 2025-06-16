@@ -773,9 +773,9 @@
                                 <i class="fas fa-book-open"></i>
                                 Vezi programele noastre
                             </a>
-                            <a href="gallery.html" class="btn btn-outline btn-lg" style="color: white; border-color: white;">
-                                <i class="fas fa-images"></i>
-                                Vizitează galeria
+                            <a href="index.html#contact" class="btn btn-outline btn-lg" style="color: white; border-color: white;" onclick="openEnrollmentForm()">
+                                <i class="fas fa-user-plus"></i>
+                                Înscrie-te acum
                             </a>
                         </div>
                 </div>
@@ -848,6 +848,34 @@
     </footer>
 
     <script>
+        // Function to open enrollment form
+        function openEnrollmentForm() {
+            // Redirect to main page with enrollment form
+            window.location.href = 'index.html#contact';
+            
+            // Set enrollment form after redirect
+            setTimeout(() => {
+                if (window.location.hash === '#contact') {
+                    const messageType = document.getElementById('message-type');
+                    if (messageType) {
+                        messageType.value = 'enrollment';
+                        toggleEnrollmentFields();
+                        
+                        // Pre-fill message
+                        const messageField = document.getElementById('contact-message');
+                        if (messageField) {
+                            messageField.value = 'Bună ziua,\n\nAș dori să înscriu copilul meu la Casa Denis. Vă rog să mă contactați pentru mai multe detalii.\n\nMulțumesc!';
+                        }
+                        
+                        // Focus on name field
+                        const nameField = document.getElementById('contact-name-form');
+                        if (nameField) {
+                            nameField.focus();
+                        }
+                    }
+                }
+            }, 100);
+        }
         // Load detailed about data from API
         async function loadDetailedAbout() {
             try {

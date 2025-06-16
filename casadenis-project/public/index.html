@@ -283,101 +283,59 @@
 
         .program-card {
             background: white;
-            border-radius: 20px;
+            border-radius: 16px;
             padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
-            cursor: pointer;
-            border: 3px solid transparent;
+            border: 2px solid transparent;
         }
 
-        /* Remove generic program card hover rule */
-        /* .program-card:hover {  */
-        /*    transform: translateY(-15px) scale(1.02);  */
-        /*    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);  */
-        /*    rotate: 1deg;  */
-        /* } */
-
-        .program-card:nth-child(odd):hover {
-            rotate: -1deg;
+        .program-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
         }
 
         .program-icon {
-            width: 80px;
-            height: 80px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 1.5rem;
-            position: relative;
-            transition: all 0.4s ease;
+            transition: all 0.3s ease;
         }
 
         .program-icon i {
-            font-size: 2.5rem;
+            font-size: 2rem;
+            color: white;
             transition: all 0.3s ease;
         }
 
         .program-card:hover .program-icon {
-            transform: scale(1.2) rotate(10deg);
-            animation: bounce 0.6s ease;
+            transform: scale(1.1);
         }
 
-        .program-card:hover .program-icon i {
-            animation: wiggle 0.5s ease;
+        .program-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-weight: 600;
         }
 
-        /* Add specific hover effects for program cards based on theme (like schedule cards) */
-        .program-card.bg-pink-theme:hover {
-             background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
-             border-color: #ec4899;
-        }
-        .program-card.bg-pink-theme:hover .program-icon i {
-            color: #ec4899 !important;
+        .program-card p {
+            color: #6b7280;
+            line-height: 1.6;
+            text-align: center;
+            margin-bottom: 1.5rem;
         }
 
-        .program-card.bg-purple-theme:hover {
-             background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
-             border-color: #a855f7;
+        .program-card .btn {
+            width: 100%;
+            margin-top: auto;
         }
-         .program-card.bg-purple-theme:hover .program-icon i {
-            color: #a855f7 !important;
-        }
-
-        .program-card.bg-yellow-theme:hover {
-             background: linear-gradient(135deg, #fefce8 0%, #fef3c7 100%);
-             border-color: #eab308;
-        }
-         .program-card.bg-yellow-theme:hover .program-icon i {
-            color: #eab308 !important;
-        }
-
-        .program-card.bg-green-theme:hover {
-             background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-             border-color: #22c55e;
-        }
-         .program-card.bg-green-theme:hover .program-icon i {
-            color: #22c55e !important;
-        }
-
-        .program-card.bg-blue-theme:hover {
-             background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-             border-color: #3b82f6;
-        }
-         .program-card.bg-blue-theme:hover .program-icon i {
-            color: #3b82f6 !important;
-          }
-
-        .program-card.bg-orange-theme:hover {
-             background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%);
-             border-color: #f97316;
-        }
-         .program-card.bg-orange-theme:hover .program-icon i {
-            color: #f97316 !important;
-          }
 
         /* Responsive - exact ca programele */
         @media (max-width: 1024px) {
@@ -1190,93 +1148,7 @@
             }
         }
 
-        /* Program card hover effects */
-        .program-card {
-            transition: all 0.3s ease;
-            border: 3px solid transparent;
-            background: white;
-        }
 
-        .program-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-        }
-
-        .program-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.3));
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            border-radius: 20px;
-        }
-
-        .program-card:hover::before {
-            opacity: 1;
-        }
-
-        .program-icon {
-            transition: all 0.4s ease;
-            position: relative;
-            z-index: 2;
-        }
-
-        .program-card:hover .program-icon {
-            transform: scale(1.1) rotate(5deg);
-        }
-
-        .program-card:hover .program-icon i {
-            animation: wiggle 0.5s ease;
-        }
-
-        .program-card h3, .program-card p {
-            position: relative;
-            z-index: 2;
-            transition: transform 0.3s ease;
-        }
-
-        .program-card:hover h3 {
-            transform: translateY(-3px);
-        }
-
-        .program-card:hover p {
-            transform: translateY(-2px);
-        }
-
-        /* Add gradient hover effects based on icon color */
-        .program-card[data-color="#db2777"]:hover {
-            background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
-            border-color: #ec4899;
-        }
-
-        .program-card[data-color="#7c3aed"]:hover {
-            background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
-            border-color: #a855f7;
-        }
-
-        .program-card[data-color="#f59e42"]:hover {
-            background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%);
-            border-color: #f97316;
-        }
-
-        .program-card[data-color="#10b981"]:hover {
-            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-            border-color: #22c55e;
-        }
-
-        .program-card[data-color="#fbbf24"]:hover {
-            background: linear-gradient(135deg, #fefce8 0%, #fef3c7 100%);
-            border-color: #eab308;
-        }
-
-        .program-card[data-color="#6366f1"]:hover {
-            background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
-            border-color: #6366f1;
-        }
         
         /* Pricing Cards Hover Effects */
         .pricing-card {
@@ -1879,7 +1751,7 @@
                                 <i class="far fa-clock"></i>
                                 <div class="contact-item-content">
                                     <h3>Program</h3>
-                                    <p id="contact-hours">Luni - Vineri: 07:00 - 18:00</p>
+                                    <p id="contact-hours">Luni - Vineri: 07:00 - 17:00</p>
                                 </div>
                             </div>
                         </div>
@@ -1926,19 +1798,7 @@
                                     
                                     <div class="form-group">
                                         <label for="child-age">Vârsta copilului *</label>
-                                        <select id="child-age" name="child_age" class="form-control">
-                                            <option value="">Selectează vârsta</option>
-                                            <option value="3">3 ani</option>
-                                            <option value="4">4 ani</option>
-                                            <option value="5">5 ani</option>
-                                            <option value="6">6 ani</option>
-                                            <option value="7">7 ani</option>
-                                            <option value="8">8 ani</option>
-                                            <option value="9">9 ani</option>
-                                            <option value="10">10 ani</option>
-                                            <option value="11">11 ani</option>
-                                            <option value="12">12 ani</option>
-                                        </select>
+                                        <input type="number" id="child-age" name="child_age" class="form-control" min="3" max="18" placeholder="Vârsta copilului (ani)">
                                     </div>
                                 </div>
                                 
@@ -1957,16 +1817,7 @@
                                     <textarea id="preferred-activities" name="preferred_activities" class="form-control" rows="2" placeholder="Ce activități îi plac copilului? (sport, artă, muzică, etc.)"></textarea>
                                 </div>
                                 
-                                <div class="form-group">
-                                    <label for="program-preference">Programul dorit</label>
-                                    <select id="program-preference" name="program_preference" class="form-control">
-                                        <option value="">Selectează programul</option>
-                                        <option value="half-day">Jumătate de zi (07:00 - 13:00)</option>
-                                        <option value="full-day">Program complet (07:00 - 17:00)</option>
-                                        <option value="extended">Program extins (07:00 - 18:00)</option>
-                                        <option value="flexible">Program flexibil</option>
-                                    </select>
-                                </div>
+
                             </div>
                             
                             <div class="form-group">
@@ -2043,7 +1894,7 @@
                 <div class="footer-contact">
                     <h3>Contact</h3>
                     <ul>
-                        <li><i class="far fa-clock"></i> Luni - Vineri: 07:00 - 18:00</li>
+                        <li><i class="far fa-clock"></i> Luni - Vineri: 07:00 - 17:00</li>
                         <li>
                             <i class="fas fa-phone"></i> 
                             <a href="tel:+40740490171" style="color: #9ca3af; text-decoration: none; transition: color 0.2s ease;" onmouseover="this.style.color='white'" onmouseout="this.style.color='#9ca3af'">+40 740 490 171</a>, 
