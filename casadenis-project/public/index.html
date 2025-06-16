@@ -732,6 +732,31 @@
             background: white;
             box-shadow: 0 0 0 3px rgba(219, 39, 119, 0.1);
         }
+        
+        /* Enrollment fields styling */
+        #enrollment-fields {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-top: 1rem;
+            border: 2px solid #f59e0b;
+            transition: all 0.3s ease;
+        }
+        
+        #enrollment-fields .form-group label {
+            color: #92400e;
+            font-weight: 600;
+        }
+        
+        #enrollment-fields .form-control {
+            border: 2px solid #fbbf24;
+            background: #fffbeb;
+        }
+        
+        #enrollment-fields .form-control:focus {
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+        }
 
         .form-control.invalid {
             border-color: #ef4444;
@@ -1328,7 +1353,10 @@
                 <h1 id="hero-title">Un loc unde copiii <span>înfloresc</span></h1>
                 <p id="hero-subtitle">Programul nostru after school oferă un mediu sigur, educativ și distractiv pentru copilul tău după orele de școală.</p>
                 <div class="hero-buttons flex gap-4">
-                    <a href="#contact" class="btn btn-primary btn-lg">Înscrie-te acum</a>
+                    <button onclick="openEnrollmentForm()" class="btn btn-primary btn-lg">
+                        <i class="fas fa-user-plus"></i>
+                        Înscrie-te acum
+                    </button>
                     <a href="#about" class="btn btn-outline btn-lg">
                         Află mai multe
                         <i class="fas fa-chevron-right ml-2"></i>
@@ -1396,10 +1424,10 @@
                         <i class="fas fa-book-open"></i>
                         Află mai multe despre noi
                     </a>
-                    <a href="#contact" class="btn btn-outline btn-lg" style="display: inline-flex; align-items: center; gap: 0.5rem;">
-                        <i class="fas fa-phone"></i>
-                        Contactează-ne
-                    </a>
+                    <button onclick="openEnrollmentForm()" class="btn btn-outline btn-lg" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-user-plus"></i>
+                        Înscrie-te acum
+                    </button>
                 </div>
             </div>
             <div class="about-image">
@@ -1824,7 +1852,14 @@
                                 <i class="fas fa-phone"></i>
                                 <div class="contact-item-content">
                                     <h3>Telefon</h3>
-                                    <p id="contact-phone">+40 740 490 171, +40 740 096 051</p>
+                                    <p id="contact-phone">
+                                        <a href="tel:+40740490171" style="color: #7c3aed; text-decoration: none; transition: color 0.2s ease; margin-right: 0.5rem;" onmouseover="this.style.color='#db2777'" onmouseout="this.style.color='#7c3aed'">
+                                            +40 740 490 171
+                                        </a>,
+                                        <a href="tel:+40740096051" style="color: #7c3aed; text-decoration: none; transition: color 0.2s ease; margin-left: 0.5rem;" onmouseover="this.style.color='#db2777'" onmouseout="this.style.color='#7c3aed'">
+                                            +40 740 096 051
+                                        </a>
+                                    </p>
                                 </div>
                             </div>
                             
@@ -1832,7 +1867,11 @@
                                 <i class="fas fa-envelope"></i>
                                 <div class="contact-item-content">
                                     <h3>Email</h3>
-                                    <p id="contact-email">casa.denis2025@gmail.com</p>
+                                    <p id="contact-email">
+                                        <a href="mailto:casa.denis2025@gmail.com" style="color: #7c3aed; text-decoration: none; transition: color 0.2s ease;" onmouseover="this.style.color='#db2777'" onmouseout="this.style.color='#7c3aed'">
+                                            casa.denis2025@gmail.com
+                                        </a>
+                                    </p>
                                 </div>
                             </div>
                             
@@ -1870,11 +1909,64 @@
                             
                             <div class="form-group">
                                 <label for="message-type">Tipul mesajului</label>
-                                <select id="message-type" name="message_type" class="form-control">
+                                <select id="message-type" name="message_type" class="form-control" onchange="toggleEnrollmentFields()">
                                     <option value="contact">Întrebare generală</option>
                                     <option value="enrollment">Înscriere copil</option>
                                     <option value="rental_inquiry">Închiriere spațiu</option>
                                 </select>
+                            </div>
+                            
+                            <!-- Enrollment specific fields -->
+                            <div id="enrollment-fields" style="display: none;">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="child-name">Numele copilului *</label>
+                                        <input type="text" id="child-name" name="child_name" class="form-control" placeholder="Numele complet al copilului">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="child-age">Vârsta copilului *</label>
+                                        <select id="child-age" name="child_age" class="form-control">
+                                            <option value="">Selectează vârsta</option>
+                                            <option value="3">3 ani</option>
+                                            <option value="4">4 ani</option>
+                                            <option value="5">5 ani</option>
+                                            <option value="6">6 ani</option>
+                                            <option value="7">7 ani</option>
+                                            <option value="8">8 ani</option>
+                                            <option value="9">9 ani</option>
+                                            <option value="10">10 ani</option>
+                                            <option value="11">11 ani</option>
+                                            <option value="12">12 ani</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="allergies">Alergii și intoleranțe alimentare</label>
+                                    <textarea id="allergies" name="allergies" class="form-control" rows="2" placeholder="Menționează orice alergii sau intoleranțe alimentare (opțional)"></textarea>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="medical-issues">Probleme medicale</label>
+                                    <textarea id="medical-issues" name="medical_issues" class="form-control" rows="2" placeholder="Menționează orice probleme medicale de care ar trebui să știm (opțional)"></textarea>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="preferred-activities">Activități preferate</label>
+                                    <textarea id="preferred-activities" name="preferred_activities" class="form-control" rows="2" placeholder="Ce activități îi plac copilului? (sport, artă, muzică, etc.)"></textarea>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="program-preference">Programul dorit</label>
+                                    <select id="program-preference" name="program_preference" class="form-control">
+                                        <option value="">Selectează programul</option>
+                                        <option value="half-day">Jumătate de zi (07:00 - 13:00)</option>
+                                        <option value="full-day">Program complet (07:00 - 17:00)</option>
+                                        <option value="extended">Program extins (07:00 - 18:00)</option>
+                                        <option value="flexible">Program flexibil</option>
+                                    </select>
+                                </div>
                             </div>
                             
                             <div class="form-group">
@@ -1931,6 +2023,9 @@
                         <a href="https://www.facebook.com/share/16Unfd6ZEv/?mibextid=wwXIfr" target="_blank">
                             <i class="fab fa-facebook-f"></i>
                         </a>
+                        <a href="https://maps.app.goo.gl/e4oLP319fJpcmpUd6" target="_blank" title="Locația noastră pe Google Maps">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </a>
                     </div>
                 </div>
                 <div class="footer-links">
@@ -1949,8 +2044,15 @@
                     <h3>Contact</h3>
                     <ul>
                         <li><i class="far fa-clock"></i> Luni - Vineri: 07:00 - 18:00</li>
-                        <li><i class="fas fa-phone"></i> +40 740 490 171, +40 740 096 051</li>
-                        <li><i class="fas fa-envelope"></i> casa.denis2025@gmail.com</li>
+                        <li>
+                            <i class="fas fa-phone"></i> 
+                            <a href="tel:+40740490171" style="color: #9ca3af; text-decoration: none; transition: color 0.2s ease;" onmouseover="this.style.color='white'" onmouseout="this.style.color='#9ca3af'">+40 740 490 171</a>, 
+                            <a href="tel:+40740096051" style="color: #9ca3af; text-decoration: none; transition: color 0.2s ease;" onmouseover="this.style.color='white'" onmouseout="this.style.color='#9ca3af'">+40 740 096 051</a>
+                        </li>
+                        <li>
+                            <i class="fas fa-envelope"></i> 
+                            <a href="mailto:casa.denis2025@gmail.com" style="color: #9ca3af; text-decoration: none; transition: color 0.2s ease;" onmouseover="this.style.color='white'" onmouseout="this.style.color='#9ca3af'">casa.denis2025@gmail.com</a>
+                        </li>
                         <li>
                             <i class="fas fa-map-marker-alt"></i> 
                             <a href="https://maps.app.goo.gl/e4oLP319fJpcmpUd6" target="_blank" rel="noopener noreferrer" style="color: #9ca3af; text-decoration: none; transition: color 0.2s ease;" onmouseover="this.style.color='white'" onmouseout="this.style.color='#9ca3af'">
@@ -1996,6 +2098,12 @@
                                     </div>
                                     <h3 style="color: ${color}">${program.title}</h3>
                                     <p>${program.description}</p>
+                                    <div style="margin-top: 1.5rem; text-align: center;">
+                                        <button onclick="openEnrollmentForm('full-day')" class="btn btn-primary" style="background: ${color}; border: none; padding: 0.75rem 1.5rem; border-radius: 25px; color: white; font-weight: 600; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                            <i class="fas fa-user-plus"></i>
+                                            Înscrie-te acum
+                                        </button>
+                                    </div>
                                 </div>
                             `;
                             
@@ -2238,8 +2346,29 @@
                             addressElement.textContent = contactData.address;
                         }
                     }
-                    if (contactData.phone) document.getElementById('contact-phone').textContent = contactData.phone;
-                    if (contactData.email) document.getElementById('contact-email').textContent = contactData.email;
+                    if (contactData.phone) {
+                        const phoneElement = document.getElementById('contact-phone');
+                        if (contactData.phone1 && contactData.phone2) {
+                            phoneElement.innerHTML = `
+                                <a href="tel:${contactData.phone1.replace(/\s/g, '')}" style="color: #7c3aed; text-decoration: none; transition: color 0.2s ease; margin-right: 0.5rem;" onmouseover="this.style.color='#db2777'" onmouseout="this.style.color='#7c3aed'">
+                                    ${contactData.phone1}
+                                </a>,
+                                <a href="tel:${contactData.phone2.replace(/\s/g, '')}" style="color: #7c3aed; text-decoration: none; transition: color 0.2s ease; margin-left: 0.5rem;" onmouseover="this.style.color='#db2777'" onmouseout="this.style.color='#7c3aed'">
+                                    ${contactData.phone2}
+                                </a>
+                            `;
+                        } else {
+                            phoneElement.textContent = contactData.phone;
+                        }
+                    }
+                    if (contactData.email) {
+                        const emailElement = document.getElementById('contact-email');
+                        emailElement.innerHTML = `
+                            <a href="mailto:${contactData.email}" style="color: #7c3aed; text-decoration: none; transition: color 0.2s ease;" onmouseover="this.style.color='#db2777'" onmouseout="this.style.color='#7c3aed'">
+                                ${contactData.email}
+                            </a>
+                        `;
+                    }
                     if (contactData.hours) document.getElementById('contact-hours').textContent = contactData.hours;
                     console.log('✅ Contact loaded');
                 }
@@ -2277,8 +2406,29 @@
                             addressElement.textContent = contact.address;
                         }
                     }
-                    if (contact.phone) document.getElementById('contact-phone').textContent = contact.phone;
-                    if (contact.email) document.getElementById('contact-email').textContent = contact.email;
+                    if (contact.phone) {
+                        const phoneElement = document.getElementById('contact-phone');
+                        if (contact.phone1 && contact.phone2) {
+                            phoneElement.innerHTML = `
+                                <a href="tel:${contact.phone1.replace(/\s/g, '')}" style="color: #7c3aed; text-decoration: none; transition: color 0.2s ease; margin-right: 0.5rem;" onmouseover="this.style.color='#db2777'" onmouseout="this.style.color='#7c3aed'">
+                                    ${contact.phone1}
+                                </a>,
+                                <a href="tel:${contact.phone2.replace(/\s/g, '')}" style="color: #7c3aed; text-decoration: none; transition: color 0.2s ease; margin-left: 0.5rem;" onmouseover="this.style.color='#db2777'" onmouseout="this.style.color='#7c3aed'">
+                                    ${contact.phone2}
+                                </a>
+                            `;
+                        } else {
+                            phoneElement.textContent = contact.phone;
+                        }
+                    }
+                    if (contact.email) {
+                        const emailElement = document.getElementById('contact-email');
+                        emailElement.innerHTML = `
+                            <a href="mailto:${contact.email}" style="color: #7c3aed; text-decoration: none; transition: color 0.2s ease;" onmouseover="this.style.color='#db2777'" onmouseout="this.style.color='#7c3aed'">
+                                ${contact.email}
+                            </a>
+                        `;
+                    }
                     if (contact.hours) document.getElementById('contact-hours').textContent = contact.hours;
                 }
             } catch (error) {
@@ -2291,12 +2441,66 @@
             window.open('gallery.html', '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
         }
 
+        // Funcție pentru a afișa/ascunde câmpurile de înscriere
+        function toggleEnrollmentFields() {
+            const messageType = document.getElementById('message-type').value;
+            const enrollmentFields = document.getElementById('enrollment-fields');
+            
+            if (messageType === 'enrollment') {
+                enrollmentFields.style.display = 'block';
+                // Update form title
+                document.querySelector('.contact-form h3').textContent = 'Înscrie-ți copilul';
+            } else {
+                enrollmentFields.style.display = 'none';
+                // Reset form title
+                document.querySelector('.contact-form h3').textContent = 'Trimite-ne un mesaj';
+            }
+        }
+
+        // Funcție pentru completarea automată a formularului de înscriere
+        function openEnrollmentForm(programType = '') {
+            // Set message type to enrollment
+            const messageTypeSelect = document.getElementById('message-type');
+            if (messageTypeSelect) {
+                messageTypeSelect.value = 'enrollment';
+                toggleEnrollmentFields();
+            }
+            
+            // Set program preference if specified
+            if (programType) {
+                const programSelect = document.getElementById('program-preference');
+                if (programSelect) {
+                    programSelect.value = programType;
+                }
+            }
+            
+            // Pre-fill message with enrollment template
+            const messageTextarea = document.getElementById('contact-message');
+            if (messageTextarea && messageTextarea.value.trim() === '') {
+                messageTextarea.value = 'Bună ziua,\n\nDorim să înscriu copilul meu la Casa Denis.\n\nVă rog să îmi oferiți mai multe informații despre:\n- Procesul de înscriere\n- Documentele necesare\n- Disponibilitatea locurilor\n- Detalii despre program și activități\n\nMulțumesc și aștept răspunsul dumneavoastră!';
+            }
+            
+            // Scroll to contact section
+            document.getElementById('contact').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+            
+            // Focus on the name input after a short delay
+            setTimeout(() => {
+                const nameInput = document.getElementById('contact-name');
+                if (nameInput) {
+                    nameInput.focus();
+                }
+            }, 1000);
+        }
+
         // Funcție pentru a deschide formularul de închiriere
         function openRentalInquiry() {
             // Set message type to rental inquiry
             const messageTypeSelect = document.getElementById('message-type');
             if (messageTypeSelect) {
                 messageTypeSelect.value = 'rental_inquiry';
+                toggleEnrollmentFields();
             }
             
             // Pre-fill message with rental inquiry template
@@ -2584,10 +2788,28 @@
                         message: document.getElementById('contact-message').value.trim()
                     };
                     
+                    // Add enrollment specific fields if enrollment is selected
+                    if (formData.message_type === 'enrollment') {
+                        formData.child_name = document.getElementById('child-name').value.trim();
+                        formData.child_age = document.getElementById('child-age').value;
+                        formData.allergies = document.getElementById('allergies').value.trim();
+                        formData.medical_issues = document.getElementById('medical-issues').value.trim();
+                        formData.preferred_activities = document.getElementById('preferred-activities').value.trim();
+                        formData.program_preference = document.getElementById('program-preference').value;
+                    }
+                    
                     // Validate required fields
                     if (!formData.name || !formData.email || !formData.message) {
                         showFormError('Te rugăm să completezi toate câmpurile obligatorii.');
                         return;
+                    }
+                    
+                    // Additional validation for enrollment
+                    if (formData.message_type === 'enrollment') {
+                        if (!formData.child_name || !formData.child_age) {
+                            showFormError('Pentru înscriere, numele și vârsta copilului sunt obligatorii.');
+                            return;
+                        }
                     }
                     
                     // Validate email format
