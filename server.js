@@ -3282,6 +3282,44 @@ initializeApp().then(() => {
     process.exit(1);
 });
 
+// Debug route to check volumes
+app.get('/api/debug/volumes', (req, res) => {
+    const fs = require('fs');
+    const volumeInfo = {
+        timestamp: new Date().toISOString(),
+        volumes: []
+    };
+    
+    const checkPaths = [
+        '/app/casadenis-project/public/images',
+        '/app/data',
+        path.join(__dirname, 'casadenis-project', 'public', 'images'),
+        path.join(__dirname, 'data')
+    ];
+    
+    checkPaths.forEach(checkPath => {
+        try {
+            const stats = fs.statSync(checkPath);
+            const files = fs.readdirSync(checkPath);
+            volumeInfo.volumes.push({
+                path: checkPath,
+                exists: true,
+                isDirectory: stats.isDirectory(),
+                fileCount: files.length,
+                files: files.slice(0, 5) // First 5 files
+            });
+        } catch (error) {
+            volumeInfo.volumes.push({
+                path: checkPath,
+                exists: false,
+                error: error.message
+            });
+        }
+    });
+    
+    res.json(volumeInfo);
+});
+
 // 404 handler
 
 // Update existing gallery images with dimension data (one-time migration)
