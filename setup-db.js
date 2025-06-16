@@ -22,11 +22,72 @@ const chalk = {
 class CasaDenisSetup {
     constructor() {
         this.connection = null;
-        this.config = {
-            host: process.env.DB_HOST || 'localhost',
-            user: process.env.DB_USER || 'root',
-            password: process.env.DB_PASSWORD || '',
-            database: process.env.DB_NAME || 'casa_denis_db',
+        this.config = this.getDatabaseConfig();
+    }
+
+    getDatabaseConfig() {
+        // First try Railway's MySQL environment variables (MYSQL prefix) - HIGHEST PRIORITY
+        if (process.env.MYSQLHOST && process.env.MYSQLUSER && process.env.MYSQLPASSWORD) {
+            console.log('🔧 Setup using Railway MySQL environment variables');
+            
+            // Clean up variables by removing all whitespace, newlines, and control characters
+            const cleanHost = process.env.MYSQLHOST.replace(/[\r\n\t\s]/g, '').trim();
+            const cleanUser = process.env.MYSQLUSER.replace(/[\r\n\t\s]/g, '').trim();
+            const cleanPassword = process.env.MYSQLPASSWORD.replace(/[\r\n\t]/g, '').trim();
+            const cleanDatabase = process.env.MYSQLDATABASE ? process.env.MYSQLDATABASE.replace(/[\r\n\t\s]/g, '').trim() : 'railway';
+            
+            return {
+                host: cleanHost,
+                user: cleanUser,
+                password: cleanPassword,
+                database: cleanDatabase,
+                port: parseInt(process.env.MYSQLPORT) || 3306,
+                charset: 'utf8mb4',
+                ssl: { rejectUnauthorized: false }
+            };
+        }
+        
+        // Then try DATABASE_URL format (Railway's preferred method)
+        if (process.env.DATABASE_URL && process.env.DATABASE_URL.startsWith('mysql://')) {
+            console.log('🔧 Setup using DATABASE_URL');
+            try {
+                const url = new URL(process.env.DATABASE_URL);
+                return {
+                    host: url.hostname,
+                    user: url.username,
+                    password: url.password,
+                    database: url.pathname.slice(1),
+                    port: parseInt(url.port) || 3306,
+                    charset: 'utf8mb4',
+                    ssl: { rejectUnauthorized: false }
+                };
+            } catch (error) {
+                console.log('⚠️ Invalid DATABASE_URL format, trying individual variables');
+            }
+        }
+        
+        // Try Railway's DB environment variables (DB_ prefix) - FALLBACK
+        if (process.env.DB_HOST && process.env.DB_USER && process.env.DB_PASSWORD && process.env.DB_NAME) {
+            console.log('🔧 Setup using Railway DB environment variables');
+            return {
+                host: process.env.DB_HOST,
+                user: process.env.DB_USER,
+                password: process.env.DB_PASSWORD,
+                database: process.env.DB_NAME,
+                port: parseInt(process.env.DB_PORT) || 3306,
+                charset: 'utf8mb4',
+                ssl: { rejectUnauthorized: false }
+            };
+        }
+        
+        // Fallback to localhost for development
+        console.log('🔧 Setup using localhost fallback (development mode)');
+        return {
+            host: 'localhost',
+            user: 'root',
+            password: '',
+            database: 'casa_denis_db',
+            port: 3306,
             charset: 'utf8mb4'
         };
     }
