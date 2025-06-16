@@ -1508,7 +1508,7 @@ app.get('/api/gallery/preview', async (req, res) => {
     }
 });
 
-// Bulk operations for gallery
+// Bulk operations for gallery (database version)
 app.post('/api/gallery/bulk', async (req, res) => {
     try {
         const { action, imageIds } = req.body;
@@ -1520,33 +1520,24 @@ app.post('/api/gallery/bulk', async (req, res) => {
             });
         }
         
-        const gallery = await readData(dataPath.gallery);
         let deletedCount = 0;
         
         if (action === 'delete') {
-            // Find images to delete
-            const imagesToDelete = gallery.filter(img => imageIds.includes(img.id));
+            // Soft delete images from database
+            const placeholders = imageIds.map(() => '?').join(',');
+            const [result] = await pool.execute(
+                `UPDATE gallery_items SET is_active = FALSE, updated_at = NOW() 
+                 WHERE id IN (${placeholders}) AND is_active = TRUE`,
+                imageIds
+            );
             
-            // Delete physical files
-            for (const image of imagesToDelete) {
-                const imagePath = path.join(__dirname, 'casadenis-project', 'public', image.src);
-                try {
-                    await fs.unlink(imagePath);
-                    deletedCount++;
-                } catch (unlinkError) {
-                    console.warn('Could not delete physical file:', unlinkError.message);
-                }
-            }
+            deletedCount = result.affectedRows;
             
-            // Remove from gallery array
-            const updatedGallery = gallery.filter(img => !imageIds.includes(img.id));
-            
-            // Save updated gallery
-            await writeData(dataPath.gallery, updatedGallery);
+            console.log(`✅ Bulk deleted ${deletedCount} images from database`);
             
             res.json({
                 success: true,
-                message: `${deletedCount} imagini au fost șterse`,
+                message: `${deletedCount} imagini au fost șterse din galerie`,
                 deletedCount
             });
         } else {
@@ -1561,6 +1552,54 @@ app.post('/api/gallery/bulk', async (req, res) => {
         res.status(500).json({ 
             success: false,
             error: 'Eroare la operația în masă' 
+        });
+    }
+});
+
+// Clean broken images from database (remove images that reference old file paths)
+app.post('/api/gallery/cleanup-broken', async (req, res) => {
+    try {
+        // Find images that still reference old file paths (not database images)
+        const [brokenImages] = await pool.execute(`
+            SELECT id, title, image_path 
+            FROM gallery_items 
+            WHERE is_active = TRUE 
+            AND (image_data IS NULL OR image_data = '') 
+            AND image_path LIKE 'images/%'
+        `);
+        
+        if (brokenImages.length === 0) {
+            return res.json({
+                success: true,
+                message: 'Nu au fost găsite imagini deteriorate',
+                deletedCount: 0
+            });
+        }
+        
+        // Soft delete all broken images
+        const brokenIds = brokenImages.map(img => img.id);
+        const placeholders = brokenIds.map(() => '?').join(',');
+        
+        const [result] = await pool.execute(
+            `UPDATE gallery_items SET is_active = FALSE, updated_at = NOW() 
+             WHERE id IN (${placeholders})`,
+            brokenIds
+        );
+        
+        console.log(`🧹 Cleaned up ${result.affectedRows} broken images from database`);
+        
+        res.json({
+            success: true,
+            message: `${result.affectedRows} imagini deteriorate au fost curățate`,
+            deletedCount: result.affectedRows,
+            brokenImages: brokenImages.map(img => ({ id: img.id, title: img.title }))
+        });
+        
+    } catch (error) {
+        console.error('Error cleaning broken images:', error);
+        res.status(500).json({ 
+            success: false,
+            error: 'Eroare la curățarea imaginilor deteriorate' 
         });
     }
 });

@@ -4366,8 +4366,9 @@ Descriere: "${itemToDelete.alt || 'Fără descriere'}"
                 const confirmCleanup = confirm(`🧹 Cleanup Galerie
     
 Această operație va:
-• Reîmprospăta lista de imagini din baza de date
-• Verifica conexiunea la galerie
+• Șterge imaginile deteriorate din baza de date
+• Curăța referințele la fișiere inexistente
+• Reîmprospăta lista de imagini
 • Poate dura câteva secunde
 
 Continui?`);
@@ -4375,21 +4376,37 @@ Continui?`);
                 if (!confirmCleanup) return;
 
                 try {
-                    showAlert('info', 'Se reîmprospătează galeria... Te rog așteaptă...');
+                    showAlert('info', 'Se curăță imaginile deteriorate... Te rog așteaptă...');
 
-                    // Reîncarcă galeria din baza de date
-                    await loadGalleryItems();
+                    // Curăță imaginile deteriorate din baza de date
+                    const cleanupResponse = await fetch('/api/gallery/cleanup-broken', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
                     
-                    // Reîmprospătează preview-ul
-                    if (typeof refreshGalleryPreview === 'function') {
-                        refreshGalleryPreview();
-                    }
+                    if (cleanupResponse.ok) {
+                        const result = await cleanupResponse.json();
+                        
+                        // Reîncarcă galeria din baza de date
+                        await loadGalleryItems();
+                        
+                        // Reîmprospătează preview-ul
+                        if (typeof refreshGalleryPreview === 'function') {
+                            refreshGalleryPreview();
+                        }
 
-                    showAlert('success', '✅ Galeria a fost reîmprospătată cu succes!');
+                        if (result.deletedCount > 0) {
+                            showAlert('success', `🧹 ${result.deletedCount} imagini deteriorate au fost curățate!`);
+                        } else {
+                            showAlert('success', '✅ Nu au fost găsite imagini deteriorate. Galeria este curată!');
+                        }
+                    } else {
+                        throw new Error('Eroare la curățarea imaginilor');
+                    }
                     
                 } catch (err) {
                     console.error('Cleanup error:', err);
-                    showAlert('error', 'Eroare la reîmprospătarea galeriei: ' + err.message);
+                    showAlert('error', 'Eroare la curățarea galeriei: ' + err.message);
                 }
             };
 
