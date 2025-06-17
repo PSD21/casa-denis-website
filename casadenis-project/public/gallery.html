@@ -652,6 +652,14 @@
                     <span class="stat-number" id="photo-count">0</span>
                     <div class="stat-label">Fotografii</div>
                 </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="activity-count">0</span>
+                    <div class="stat-label">Activități</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="memory-count">0</span>
+                    <div class="stat-label">Amintiri</div>
+                </div>
             </div>
         </div>
     </div>
@@ -1046,8 +1054,8 @@
                      style="width: 100%; height: auto; display: block;">
                 <div class="image-info">${width}×${height}</div>
                 <div class="gallery-item-overlay">
-                    <div class="overlay-title">${image.title || image.alt || 'Imagine Casa Denis'}</div>
-                    ${image.description ? `<div class="overlay-description">${image.description}</div>` : ''}
+                    <div class="overlay-title">${image.alt || 'Activitate Casa Denis'}</div>
+                    <div class="overlay-description">Momentele frumoase din fiecare zi</div>
                 </div>
             `;
             
@@ -1104,6 +1112,8 @@
 
         function updateStats() {
             document.getElementById('photo-count').textContent = galleryImages.length;
+            document.getElementById('activity-count').textContent = Math.ceil(galleryImages.length / 3);
+            document.getElementById('memory-count').textContent = galleryImages.length * 2;
         }
 
         function scrollToTop() {

@@ -1125,43 +1125,17 @@ const uploadGallery = multer({
     }
 });
 
-// Get all gallery images from database
+// Get all gallery images
 app.get('/api/gallery', async (req, res) => {
     try {
-        const [rows] = await pool.execute(`
-            SELECT id, title, description, mime_type, file_size, width, height, 
-                   alt_text, category, order_index, created_at,
-                   CASE 
-                       WHEN image_data IS NOT NULL THEN CONCAT('/api/gallery/image/', id)
-                       ELSE image_path 
-                   END as src
-            FROM gallery_items 
-            WHERE is_active = TRUE 
-            ORDER BY created_at DESC
-        `);
-        
-        // Transform to match frontend format
-        const gallery = rows.map(row => ({
-            id: row.id,
-            src: row.src,
-            alt: row.alt_text || row.title,
-            title: row.title,
-            description: row.description,
-            width: row.width,
-            height: row.height,
-            aspectRatio: row.width && row.height ? row.width / row.height : 1,
-            imageType: row.width && row.height ? 
-                (row.width / row.height > 1.3 ? 'wide' : 
-                 row.width / row.height < 0.8 ? 'tall' : 'square') : 'square',
-            category: row.category,
-            uploadDate: row.created_at,
-            size: row.file_size,
-            mimeType: row.mime_type
-        }));
-        
-        res.json(gallery);
+        const gallery = await readData(dataPath.gallery);
+        // Sort by upload date (newest first)
+        const sortedGallery = gallery.sort((a, b) => 
+            new Date(b.uploadDate || 0) - new Date(a.uploadDate || 0)
+        );
+        res.json(sortedGallery);
     } catch (error) {
-        console.error('Error loading gallery from database:', error);
+        console.error('Error loading gallery:', error);
         res.status(500).json({ 
             success: false,
             error: 'Eroare la încărcarea galeriei' 
@@ -1169,44 +1143,7 @@ app.get('/api/gallery', async (req, res) => {
     }
 });
 
-// Serve image from database
-app.get('/api/gallery/image/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        
-        const [rows] = await pool.execute(
-            'SELECT image_data, mime_type, title FROM gallery_items WHERE id = ? AND is_active = TRUE',
-            [id]
-        );
-        
-        if (rows.length === 0) {
-            return res.status(404).json({ error: 'Imaginea nu a fost găsită' });
-        }
-        
-        const { image_data, mime_type, title } = rows[0];
-        
-        if (!image_data) {
-            return res.status(404).json({ error: 'Datele imaginii nu sunt disponibile' });
-        }
-        
-        // Set cache headers for better performance
-        res.set({
-            'Content-Type': mime_type,
-            'Content-Length': image_data.length,
-            'Cache-Control': 'public, max-age=31536000', // 1 year cache
-            'ETag': `"${id}"`,
-            'Content-Disposition': `inline; filename="${title || 'image'}.${mime_type.split('/')[1]}"`
-        });
-        
-        res.send(image_data);
-        
-    } catch (error) {
-        console.error('Error serving image:', error);
-        res.status(500).json({ error: 'Eroare la încărcarea imaginii' });
-    }
-});
-
-// Upload new image to database
+// Upload new image to gallery
 app.post('/api/gallery/upload', uploadGallery.single('image'), async (req, res) => {
     try {
         if (!req.file) {
@@ -1216,10 +1153,10 @@ app.post('/api/gallery/upload', uploadGallery.single('image'), async (req, res) 
             });
         }
 
-        const { title, description, category } = req.body;
+        const { alt } = req.body;
         
-        if (!title || title.trim() === '') {
-            // Delete the uploaded file if title is missing
+        if (!alt || alt.trim() === '') {
+            // Delete the uploaded file if alt text is missing
             try {
                 await fs.unlink(req.file.path);
             } catch (unlinkError) {
@@ -1227,90 +1164,64 @@ app.post('/api/gallery/upload', uploadGallery.single('image'), async (req, res) 
             }
             return res.status(400).json({ 
                 success: false,
-                error: 'Titlul imaginii este obligatoriu' 
+                error: 'Descrierea imaginii este obligatorie' 
             });
         }
 
-        // Check if title + description combination already exists
-        const [existing] = await pool.execute(
-            'SELECT id FROM gallery_items WHERE title = ? AND description = ? AND is_active = TRUE',
-            [title.trim(), description?.trim() || '']
-        );
-        
-        if (existing.length > 0) {
-            // Delete the uploaded file
-            try {
-                await fs.unlink(req.file.path);
-            } catch (unlinkError) {
-                console.warn('Could not delete file:', unlinkError.message);
-            }
-            return res.status(400).json({ 
-                success: false,
-                error: 'Există deja o imagine cu acest titlu și descriere' 
-            });
-        }
-
-        // Read image file into buffer
-        const imageBuffer = await fs.readFile(req.file.path);
-        
-        // Get image dimensions using sharp
+        // Get image dimensions using sharp or image-size
         const sharp = require('sharp');
-        let width = 0, height = 0;
+        let width = 0, height = 0, aspectRatio = 1;
         
         try {
             const metadata = await sharp(req.file.path).metadata();
             width = metadata.width || 0;
             height = metadata.height || 0;
+            aspectRatio = width > 0 && height > 0 ? width / height : 1;
         } catch (dimensionError) {
             console.warn('Could not get image dimensions:', dimensionError.message);
         }
 
-        // Insert into database
-        const [result] = await pool.execute(`
-            INSERT INTO gallery_items 
-            (title, description, image_data, mime_type, file_size, width, height, alt_text, category, is_active) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, TRUE)
-        `, [
-            title.trim(),
-            description?.trim() || '',
-            imageBuffer,
-            req.file.mimetype,
-            req.file.size,
-            width,
-            height,
-            title.trim(), // Use title as alt text
-            category?.trim() || 'general'
-        ]);
+        // Load existing gallery data
+        const gallery = await readData(dataPath.gallery);
         
-        // Clean up uploaded file (no longer needed)
-        try {
-            await fs.unlink(req.file.path);
-        } catch (unlinkError) {
-            console.warn('Could not delete temporary file:', unlinkError.message);
+        // Determine image type based on aspect ratio
+        let imageType = 'square';
+        if (aspectRatio > 1.3) {
+            imageType = 'wide'; // Landscape/wide images
+        } else if (aspectRatio < 0.8) {
+            imageType = 'tall'; // Portrait images
         }
         
-        const newImageId = result.insertId;
+        // Create new gallery item with dimension data
+        const newItem = {
+            id: uuidv4(),
+            src: `images/${req.file.filename}`,
+            alt: alt.trim(),
+            uploadDate: new Date().toISOString(),
+            size: req.file.size,
+            filename: req.file.filename,
+            width,
+            height,
+            aspectRatio,
+            imageType
+        };
         
-        console.log('✅ Gallery image uploaded to database:', title, `(${width}x${height}, ${req.file.size} bytes)`);
+        // Add to gallery array
+        gallery.push(newItem);
+        
+        // Save updated gallery
+        await writeData(dataPath.gallery, gallery);
+        
+        console.log('✅ Gallery image uploaded:', req.file.filename, `(${imageType}, ${width}x${height})`);
         
         res.status(201).json({
             success: true,
-            message: 'Imagine încărcată cu succes în baza de date!',
-            image: {
-                id: newImageId,
-                title: title.trim(),
-                description: description?.trim() || '',
-                src: `/api/gallery/image/${newImageId}`,
-                width,
-                height,
-                size: req.file.size,
-                mimeType: req.file.mimetype,
-                category: category?.trim() || 'general'
-            }
+            message: 'Imagine încărcată cu succes!',
+            image: newItem
         });
         
     } catch (error) {
-        console.error('Error uploading gallery image to database:', error);
+        console.error('Error uploading gallery image:', error);
         
         // Clean up uploaded file if there was an error
         if (req.file) {
@@ -1323,77 +1234,45 @@ app.post('/api/gallery/upload', uploadGallery.single('image'), async (req, res) 
         
         res.status(500).json({ 
             success: false,
-            error: 'Eroare la încărcarea imaginii în baza de date' 
+            error: 'Eroare la încărcarea imaginii' 
         });
     }
 });
 
-// Update gallery item (edit title/description)
+// Update gallery item (edit alt text)
 app.put('/api/gallery/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const { title, description, category } = req.body;
+        const { alt } = req.body;
         
-        if (!title || title.trim() === '') {
+        if (!alt || alt.trim() === '') {
             return res.status(400).json({ 
                 success: false,
-                error: 'Titlul imaginii este obligatoriu' 
+                error: 'Descrierea imaginii este obligatorie' 
             });
         }
         
-        // Check if another image has the same title + description combination
-        const [existing] = await pool.execute(
-            'SELECT id FROM gallery_items WHERE title = ? AND description = ? AND id != ? AND is_active = TRUE',
-            [title.trim(), description?.trim() || '', id]
-        );
+        const gallery = await readData(dataPath.gallery);
+        const imageIndex = gallery.findIndex(img => img.id === id);
         
-        if (existing.length > 0) {
-            return res.status(400).json({ 
-                success: false,
-                error: 'Există deja o imagine cu acest titlu și descriere' 
-            });
-        }
-        
-        // Update the gallery item
-        const [result] = await pool.execute(`
-            UPDATE gallery_items 
-            SET title = ?, description = ?, alt_text = ?, category = ?, updated_at = NOW()
-            WHERE id = ? AND is_active = TRUE
-        `, [
-            title.trim(),
-            description?.trim() || '',
-            title.trim(), // Use title as alt text
-            category?.trim() || 'general',
-            id
-        ]);
-        
-        if (result.affectedRows === 0) {
+        if (imageIndex === -1) {
             return res.status(404).json({ 
                 success: false,
                 error: 'Imaginea nu a fost găsită' 
             });
         }
         
-        // Get updated image data
-        const [updated] = await pool.execute(
-            'SELECT id, title, description, category, width, height, file_size, mime_type FROM gallery_items WHERE id = ?',
-            [id]
-        );
+        // Update alt text
+        gallery[imageIndex].alt = alt.trim();
+        gallery[imageIndex].updatedDate = new Date().toISOString();
+        
+        // Save updated gallery
+        await writeData(dataPath.gallery, gallery);
         
         res.json({
             success: true,
-            message: 'Imaginea a fost actualizată cu succes',
-            image: {
-                id: updated[0].id,
-                title: updated[0].title,
-                description: updated[0].description,
-                category: updated[0].category,
-                src: `/api/gallery/image/${id}`,
-                width: updated[0].width,
-                height: updated[0].height,
-                size: updated[0].file_size,
-                mimeType: updated[0].mime_type
-            }
+            message: 'Descrierea imaginii a fost actualizată',
+            image: gallery[imageIndex]
         });
         
     } catch (error) {
@@ -1405,36 +1284,48 @@ app.put('/api/gallery/:id', async (req, res) => {
     }
 });
 
-// Delete gallery image from database
+// Delete gallery image
 app.delete('/api/gallery/:id', async (req, res) => {
     try {
         const { id } = req.params;
         
-        // Soft delete - mark as inactive instead of hard delete
-        const [result] = await pool.execute(
-            'UPDATE gallery_items SET is_active = FALSE, updated_at = NOW() WHERE id = ? AND is_active = TRUE',
-            [id]
-        );
+        const gallery = await readData(dataPath.gallery);
+        const imageIndex = gallery.findIndex(img => img.id === id);
         
-        if (result.affectedRows === 0) {
+        if (imageIndex === -1) {
             return res.status(404).json({ 
                 success: false,
                 error: 'Imaginea nu a fost găsită' 
             });
         }
         
-        console.log('✅ Gallery image soft deleted from database:', id);
+        const imageToDelete = gallery[imageIndex];
+        
+        // Delete physical file
+        const imagePath = path.join(__dirname, 'casadenis-project', 'public', imageToDelete.src);
+        try {
+            await fs.unlink(imagePath);
+            console.log('✅ Physical file deleted:', imageToDelete.filename);
+        } catch (unlinkError) {
+            console.warn('Could not delete physical file:', unlinkError.message);
+        }
+        
+        // Remove from gallery array
+        gallery.splice(imageIndex, 1);
+        
+        // Save updated gallery
+        await writeData(dataPath.gallery, gallery);
         
         res.json({
             success: true,
-            message: 'Imaginea a fost ștearsă cu succes din galerie'
+            message: 'Imaginea a fost ștearsă cu succes'
         });
         
     } catch (error) {
-        console.error('Error deleting gallery image from database:', error);
+        console.error('Error deleting gallery image:', error);
         res.status(500).json({ 
             success: false,
-            error: 'Eroare la ștergerea imaginii din baza de date' 
+            error: 'Eroare la ștergerea imaginii' 
         });
     }
 });
@@ -1442,64 +1333,31 @@ app.delete('/api/gallery/:id', async (req, res) => {
 // Get gallery preview for homepage (prioritizes tall images)
 app.get('/api/gallery/preview', async (req, res) => {
     try {
-        const [rows] = await pool.execute(`
-            SELECT id, title, description, width, height, alt_text, category, created_at,
-                   CONCAT('/api/gallery/image/', id) as src,
-                   CASE 
-                       WHEN width > 0 AND height > 0 THEN
-                           CASE 
-                               WHEN width / height > 1.3 THEN 'wide'
-                               WHEN width / height < 0.8 THEN 'tall'
-                               ELSE 'square'
-                           END
-                       ELSE 'square'
-                   END as imageType
-            FROM gallery_items 
-            WHERE is_active = TRUE 
-            ORDER BY 
-                CASE 
-                    WHEN width > 0 AND height > 0 AND width / height < 0.8 THEN 0
-                    ELSE 1
-                END,
-                created_at DESC
-            LIMIT 8
-        `);
+        const gallery = await readData(dataPath.gallery);
         
-        // Transform to match frontend format
-        const previewImages = rows.map(row => ({
-            id: row.id,
-            src: row.src,
-            alt: row.alt_text || row.title,
-            title: row.title,
-            description: row.description,
-            width: row.width,
-            height: row.height,
-            aspectRatio: row.width && row.height ? row.width / row.height : 1,
-            imageType: row.imageType,
-            category: row.category,
-            uploadDate: row.created_at
-        }));
+        // Sort images: tall images first, then by upload date
+        const sortedGallery = gallery.sort((a, b) => {
+            // Prioritize tall images
+            if (a.imageType === 'tall' && b.imageType !== 'tall') return -1;
+            if (b.imageType === 'tall' && a.imageType !== 'tall') return 1;
+            
+            // For same type, sort by upload date (newest first)
+            return new Date(b.uploadDate || 0) - new Date(a.uploadDate || 0);
+        });
         
-        // Get counts
-        const [countRows] = await pool.execute(`
-            SELECT 
-                COUNT(*) as totalCount,
-                SUM(CASE WHEN width > 0 AND height > 0 AND width / height < 0.8 THEN 1 ELSE 0 END) as tallCount,
-                SUM(CASE WHEN width > 0 AND height > 0 AND width / height > 1.3 THEN 1 ELSE 0 END) as wideCount
-            FROM gallery_items 
-            WHERE is_active = TRUE
-        `);
+        // Take first 8 images (prioritizing tall ones)
+        const previewImages = sortedGallery.slice(0, 8);
         
         res.json({
             success: true,
             images: previewImages,
-            totalCount: countRows[0].totalCount,
-            tallCount: countRows[0].tallCount,
-            wideCount: countRows[0].wideCount
+            totalCount: gallery.length,
+            tallCount: gallery.filter(img => img.imageType === 'tall').length,
+            wideCount: gallery.filter(img => img.imageType === 'wide').length
         });
         
     } catch (error) {
-        console.error('Error loading gallery preview from database:', error);
+        console.error('Error loading gallery preview:', error);
         res.status(500).json({ 
             success: false,
             error: 'Eroare la încărcarea preview-ului galeriei',
@@ -1508,7 +1366,7 @@ app.get('/api/gallery/preview', async (req, res) => {
     }
 });
 
-// Bulk operations for gallery (database version)
+// Bulk operations for gallery
 app.post('/api/gallery/bulk', async (req, res) => {
     try {
         const { action, imageIds } = req.body;
@@ -1520,24 +1378,33 @@ app.post('/api/gallery/bulk', async (req, res) => {
             });
         }
         
+        const gallery = await readData(dataPath.gallery);
         let deletedCount = 0;
         
         if (action === 'delete') {
-            // Soft delete images from database
-            const placeholders = imageIds.map(() => '?').join(',');
-            const [result] = await pool.execute(
-                `UPDATE gallery_items SET is_active = FALSE, updated_at = NOW() 
-                 WHERE id IN (${placeholders}) AND is_active = TRUE`,
-                imageIds
-            );
+            // Find images to delete
+            const imagesToDelete = gallery.filter(img => imageIds.includes(img.id));
             
-            deletedCount = result.affectedRows;
+            // Delete physical files
+            for (const image of imagesToDelete) {
+                const imagePath = path.join(__dirname, 'casadenis-project', 'public', image.src);
+                try {
+                    await fs.unlink(imagePath);
+                    deletedCount++;
+                } catch (unlinkError) {
+                    console.warn('Could not delete physical file:', unlinkError.message);
+                }
+            }
             
-            console.log(`✅ Bulk deleted ${deletedCount} images from database`);
+            // Remove from gallery array
+            const updatedGallery = gallery.filter(img => !imageIds.includes(img.id));
+            
+            // Save updated gallery
+            await writeData(dataPath.gallery, updatedGallery);
             
             res.json({
                 success: true,
-                message: `${deletedCount} imagini au fost șterse din galerie`,
+                message: `${deletedCount} imagini au fost șterse`,
                 deletedCount
             });
         } else {
@@ -1552,54 +1419,6 @@ app.post('/api/gallery/bulk', async (req, res) => {
         res.status(500).json({ 
             success: false,
             error: 'Eroare la operația în masă' 
-        });
-    }
-});
-
-// Clean broken images from database (remove images that reference old file paths)
-app.post('/api/gallery/cleanup-broken', async (req, res) => {
-    try {
-        // Find images that still reference old file paths (not database images)
-        const [brokenImages] = await pool.execute(`
-            SELECT id, title, image_path 
-            FROM gallery_items 
-            WHERE is_active = TRUE 
-            AND (image_data IS NULL OR image_data = '') 
-            AND image_path LIKE 'images/%'
-        `);
-        
-        if (brokenImages.length === 0) {
-            return res.json({
-                success: true,
-                message: 'Nu au fost găsite imagini deteriorate',
-                deletedCount: 0
-            });
-        }
-        
-        // Soft delete all broken images
-        const brokenIds = brokenImages.map(img => img.id);
-        const placeholders = brokenIds.map(() => '?').join(',');
-        
-        const [result] = await pool.execute(
-            `UPDATE gallery_items SET is_active = FALSE, updated_at = NOW() 
-             WHERE id IN (${placeholders})`,
-            brokenIds
-        );
-        
-        console.log(`🧹 Cleaned up ${result.affectedRows} broken images from database`);
-        
-        res.json({
-            success: true,
-            message: `${result.affectedRows} imagini deteriorate au fost curățate`,
-            deletedCount: result.affectedRows,
-            brokenImages: brokenImages.map(img => ({ id: img.id, title: img.title }))
-        });
-        
-    } catch (error) {
-        console.error('Error cleaning broken images:', error);
-        res.status(500).json({ 
-            success: false,
-            error: 'Eroare la curățarea imaginilor deteriorate' 
         });
     }
 });

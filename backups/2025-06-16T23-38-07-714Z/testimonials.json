@@ -1,0 +1,26 @@
+[
+  {
+    "id": "58f41bed-d700-4353-9650-a26d65f0a010",
+    "name": "Dragomir  Antonio",
+    "role": "tata",
+    "text": "„Nu sunt genul care scrie recenzii, dar simt că trebuie să spun ceva: de când fata mea merge la Casa Denis, parcă s-a transformat. E mai sigură pe ea, se exprimă mai ușor și chiar profesorii au observat schimbări. E genul ăla de loc unde copilul nu doar că e supravegheat, ci chiar e ascultat și încurajat. Asta face toți banii.”\n\n",
+    "initials": "DA",
+    "color": "bg-purple-100"
+  },
+  {
+    "id": "97ca4be8-5dd8-41ad-8c2a-bbe931a93c06",
+    "name": "Cristina Dumitru",
+    "role": "Mamă",
+    "text": "„Când am căutat un loc pentru copilul meu, voiam ceva mai mult decât un simplu afterschool. La Casa Denis am găsit oameni calzi, un program flexibil și activități care chiar îl atrag. Îmi place că nu se plictisește niciodată și vine mereu acasă cu un zâmbet larg. A contat enorm și pentru echilibrul nostru de familie. Îi recomand din suflet.”",
+    "initials": "CD",
+    "color": "bg-orange-100"
+  },
+  {
+    "id": "b21652b2-7ca8-4749-9497-fc974014ee2d",
+    "name": "Ana Popa",
+    "role": "Mamă a doi copii",
+    "text": "„Sincer, Casa Denis a fost exact ce aveam nevoie. Copiii mei pleacă dimineața cu zâmbetul pe buze și se întorc plini de povești. Le plac activitățile, adoră personalul, iar eu... eu mă simt liniștită, știind că sunt pe mâini bune. Nici nu pot să vă spun ce liniște îți aduce asta, ca părinte.”\n\n",
+    "initials": "AP",
+    "color": "bg-blue-100"
+  }
+]

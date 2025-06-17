@@ -2308,13 +2308,7 @@
                 toggleEnrollmentFields();
             }
             
-            // Set program preference if specified
-            if (programType) {
-                const programSelect = document.getElementById('program-preference');
-                if (programSelect) {
-                    programSelect.value = programType;
-                }
-            }
+            // Program type is just for reference, no need to set a field
             
             // Pre-fill message with enrollment template
             const messageTextarea = document.getElementById('contact-message');
@@ -2637,7 +2631,6 @@
                         formData.allergies = document.getElementById('allergies').value.trim();
                         formData.medical_issues = document.getElementById('medical-issues').value.trim();
                         formData.preferred_activities = document.getElementById('preferred-activities').value.trim();
-                        formData.program_preference = document.getElementById('program-preference').value;
                     }
                     
                     // Validate required fields
